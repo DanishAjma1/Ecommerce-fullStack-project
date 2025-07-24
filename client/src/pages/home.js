@@ -28,9 +28,10 @@ export default function Home() {
   return (
     <div>
       <div className="flex justify-center">
-        <div className="flex px-1 py-5 gap-3 w-10/12 bg-gray-100 shadow-lg my-5 rounded-lg h-[60vh]">
-          <div className="w-3/12 justify-start flex ">
-            <div className="w-full ml-3">
+        <div className="px-1 py-5 gap-3 md:w-10/12 md:flex hidden bg-gray-100 shadow-lg my-5 rounded-lg h-[60vh]">
+        {/* Cetagory List */}
+          <div className="lg:w-3/12 md:w-4/12 justify-start flex ">
+            <div className="w-full ml-3 overflow-y-auto text-wrap overflow-scroll  ">
               <ul className="ml-3 text-lg p-3 items-center hover:cursor-pointer">
                 <li className="p-2 active:bg-slate-400 hover:cursor-pointer not-active:bg-white">
                   Automobiles
@@ -62,8 +63,10 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="w-9/12 flex gap-3 flex-row">
-            <div className="w-9/12 relative">
+          {/* shopingDashboardPic & userInfo */}
+          <div className="lg:w-9/12 md:w-4/6 flex gap-3 flex-row">
+          {/* shopingDashboardPic */}
+            <div className="lg:w-9/12 md:w-full relative">
               <div className="w-full flex bg-center">
                 <img
                   src="/shopingDashboardPic.jpg"
@@ -81,10 +84,11 @@ export default function Home() {
                 </button>
               </div>
             </div>
-            <div className="bg-slate-300 rounded-md">
-              <div className="flex flex-col justify-center">
+            {/* userInfo */}
+            <div className="lg:w-3/12 w-0 bg-slate-300 overflow-x-auto overflow-y-auto overflow-scroll rounded-md">
+              <div className="flex flex-col justify-center min-w-52">
                 <div className="flex flex-row m-5">
-                  <img src="/icon.png" alt="icon" className="w-8 mr-5" />
+                  <img src="/icon.png" alt="icon" className="min-w-8 w-8 mr-5" />
                   <p>
                     Hi,user
                     <br />
@@ -100,7 +104,7 @@ export default function Home() {
                   Log in
                 </button>
               </div>
-              <div className="mt-3 bg-orange-400 rounded-md">
+              <div className="m-3 bg-orange-400 rounded-md">
                 <p className="p-3">
                   Get US $10 off
                   <br />
@@ -109,7 +113,7 @@ export default function Home() {
                   supplier
                 </p>
               </div>
-              <div className="mt-3 bg-yellow-300 rounded-md">
+              <div className="m-3 bg-yellow-300 rounded-md">
                 <p className="p-3">
                   Send Qoutes with
                   <br />

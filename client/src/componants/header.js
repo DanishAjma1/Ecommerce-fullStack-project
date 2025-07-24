@@ -67,10 +67,10 @@ export default function Header() {
           </div>
           </div>
           <div className="w-1/2 flex justify-end">
-            <div className="w-4/6 flex justify-evenly flex-row items-center">
+            <div className="xl:w-4/6 lg:5/6 w-full flex justify-evenly flex-row items-center">
             <div className="flex w-1/5">
             <p className="text-lg font-semibold">English,</p>
-              <select name="Currency" className="bg-transparent px-2">
+              <select name="Currency" className="bg-transparent xl:px-2 lg:px-3 px-1">
                 <option value={"#"}>USD-dollor</option>
                 <option value={"#"}>Pk-rupee</option>
                 <option value={"#"}>Riyal</option>
@@ -79,6 +79,7 @@ export default function Header() {
               </div>
               <div>
                 <select name="Shipping" className="bg-transparent p-2">
+                <option selected hidden value={"#"}>Ship-to</option>
                 <option value={"#"}>Germany</option>
                 <option value={"#"}>Pakistan</option>
                 <option value={"#"}>Saudia</option>
