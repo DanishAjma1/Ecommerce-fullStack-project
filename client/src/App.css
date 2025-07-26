@@ -1,3 +1,7 @@
 .App {
 
 }
+input::placeholder {
+      color: black; /* Or use a hex code like #000000 */
+      opacity: 1; /* Important for Firefox, as it defaults to lower opacity */
+    }
