@@ -48,7 +48,7 @@ const countries = [
 ];
 
 const images = [
-  "watch.jpg",
+  "shirt.jpg",
   "watch.jpg",
   "watch.jpg",
   "watch.jpg",
@@ -60,7 +60,7 @@ const images = [
 export default function Home() {
   const ExtraServices = () => {
     return (
-      <div className="w-1/5 rounded-lg bg-white overflow-hidden shadow hover:shadow-lg transition">
+      <div className="min-w-40 max-w-60 w-full md:w-auto rounded-lg justify-self-center bg-white overflow-hidden shadow hover:shadow-lg transition">
         <div className="relative h-36">
           <img
             src="/shipping.jpg"
@@ -88,7 +88,7 @@ export default function Home() {
           <p>{con.flag}</p>
           <h1 className="text-lg font-bold">{con.name}</h1>
         </div>
-        <p className="text-sm">{con.desc}</p>
+        <p className="lg:block hidden text-sm">{con.desc}</p>
       </div>
     );
   };
@@ -96,7 +96,7 @@ export default function Home() {
     return (
       <div className="flex flex-col text-black justify-center shadow-md items-center p-5 rounded-lg bg-white">
         <img src="/shirt.jpg" alt="shirt" className="h-52" />
-        <div className="mt-5">
+        <div className="mt-5 flex text-center xl:text-start flex-col">
           <h1 className="text-lg font-bold">$10.30</h1>
           <p className="text-gray-400">T-shirt with mutiple colors,for men</p>
         </div>
@@ -106,7 +106,7 @@ export default function Home() {
   const TimeDiv = ({ heading, subHeading }) => {
     return (
       <div>
-        <div className="text-[15px] font-extrabold w-12 px-3 py-1 rounded-md flex text-white bg-black opacity-75 justify-center items-center">
+        <div className="md:text-[15px] text-sm sm:font-extrabold md:w-12 w-10 px-3 py-1 rounded-md flex text-white bg-black opacity-75 justify-center items-center">
           <p className="flex flex-col">
             {heading}
             <span className="text-sm font-light">{subHeading}</span>
@@ -118,8 +118,8 @@ export default function Home() {
   };
   const SaleItemDiv = ({ heading, subHeading }) => {
     return (
-      <div className="w-1/5 flex flex-col justify-center items-center p-5 border-r-2">
-        <img src="/watch.jpg" alt="watch" className="rounded-md" />
+      <div className="min-w-1/5 flex flex-col justify-center items-center p-5 border-r-2">
+        <img src="/watch.jpg" alt="watch" className="rounded-md min-w-24" />
         <p className="text-lg my-3">{heading}</p>
         <p className="text-sm py-1 px-3 text-red-800 rounded-3xl bg-red-200">
           {subHeading}
@@ -234,17 +234,19 @@ export default function Home() {
       </div>
       <div className="flex justify-center bg-gray-50">
         <div className="w-10/12 flex flex-col">
-          {/* second div line */}
+          {/* Deals and offers line */}
           <div className="w-full my-5">
-            <div className="flex flex-row bg-gray-100 overflow-hidden shadow-md rounded-md">
-              <div className="w-1/5  border-r-2">
-                <div className="p-2">
+            <div className="flex xl:flex-row flex-col bg-gray-100 overflow-hidden shadow-md rounded-md">
+              <div className="xl:w-1/5 flex justify-center  items-center border-r-2">
+                <div className="p-2 flex xl:w-full md:w-3/4 w-full xl:flex-col flex-row justify-between">
                   <div className="pl-3 pt-5">
-                    <h1 className="text-xl font-extrabold">Deals and offers</h1>
-                    <p>Hygiene equipments</p>
+                    <h1 className="sm:text-xl text-md font-extrabold">
+                      Deals and offers
+                    </h1>
+                    <p className="sm:text-lg text-sm">Hygiene equipments</p>
                   </div>
                   {/* time of offers */}
-                  <div className="flex flex-row justify-evenly mt-5">
+                  <div className="flex flex-row xl:justify-evenly gap-1 mt-5">
                     <TimeDiv heading={"04"} subHeading={"Days"} />
                     <TimeDiv heading={"13"} subHeading={"hour"} />
                     <TimeDiv heading={"34"} subHeading={"min"} />
@@ -252,7 +254,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="w-4/5 flex flex-row">
+              <div className="xl:w-4/5 w-full overflow-y-scroll flex flex-row">
                 <SaleItemDiv heading={"Smart watches"} subHeading={"-25%"} />
                 <SaleItemDiv heading={"Smart watches"} subHeading={"-23%"} />
                 <SaleItemDiv heading={"Smart watches"} subHeading={"-34%"} />
@@ -262,77 +264,146 @@ export default function Home() {
             </div>
           </div>
           {/* gridpics two times */}
-          <div className="my-5">
-          <div className="w-full grid grid-flow-row shadow-md overflow-hidden rounded-md">
-            <div className="grid grid-cols-6 grid-rows-2">
-              <div className="row-span-2 col-span-2 w-full">
-                <img src="/watch.jpg" alt="watch1" />
+          <div className="my-5 w-full shadow-md overflow-hidden rounded-md">
+            <div className="grid grid-cols-1 lg:grid-cols-7">
+              {/* Large screen left image with text */}
+              <div className="hidden lg:block col-span-2 relative">
+                <img
+                  src="/watch.jpg"
+                  alt="Featured Watch"
+                  className="w-full h-full object-cover rounded-l-md"
+                />
+                <div className="absolute top-10 gap-2 flex flex-col items-start w-2/3 left-6 text-white z-10">
+                  <h2 className="text-2xl font-bold">Home and outdoor</h2>
+                  <button className="text-lg bg-white px-3 py-2 opacity-80 rounded-md text-black">
+                    Best Seller
+                  </button>
+                </div>
               </div>
-              {images.map((image) => (
-                <img src="/watch.jpg" alt="watch8" className="w-full h-auto" />
-              ))}
+
+              {/* Text for small screens */}
+              <div className="lg:hidden px-4 py-2">
+                <h2 className="text-xl font-bold">Home and outdoor</h2>
+              </div>
+
+              {/* Grid of product images */}
+              <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
+                {images.map((img, idx) => (
+                  <div className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex">
+                    <div className="relative flex flex-col lg:gap-0 gap-3 lg:flex-row lg:justify-between lg:w-full lg:p-2 items-start">
+                      <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
+                        <h6 className="xl:text-md text-sm">Soft chairs</h6>
+                        <p className="text-xs md:text-sm text-gray-600">
+                          From USD 19
+                        </p>
+                      </div>
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`watch${idx}`}
+                        className="min-w-32 min-h-28 order-1 lg:order-none lg:min-w-8 lg:min-h-8 relative lg:w-1/2 h-20 object-contain"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          </div>
-          <div className="my-5">
-          <div className="w-full grid grid-flow-row shadow-md overflow-hidden rounded-md">
-            <div className="grid grid-cols-6 grid-rows-2">
-              <div className="row-span-2 col-span-2 w-full">
-                <img src="/watch.jpg" alt="watch1" />
+          <div className="my-5 w-full shadow-md overflow-hidden rounded-md">
+            <div className="grid grid-cols-1 lg:grid-cols-7">
+              {/* Large screen left image with text */}
+              <div className="hidden lg:block col-span-2 relative">
+                <img
+                  src="/watch.jpg"
+                  alt="Featured Watch"
+                  className="w-full h-full object-cover rounded-l-md"
+                />
+                <div className="absolute top-6 w-2/3 left-6 text-white z-10 gap-2 flex flex-col items-start">
+                  <h2 className="text-2xl font-bold">
+                    Consumer electronic and gadgets
+                  </h2>
+                  <button className="text-lg bg-white px-3 py-2 opacity-90 rounded-md text-black">
+                    Source now
+                  </button>
+                </div>
               </div>
-              {images.map((image) => (
-                <img src="/watch.jpg" alt="watch8" className="w-full h-auto" />
-              ))}
+
+              {/* Text for small screens */}
+              <div className="lg:hidden px-4 py-2">
+                <h2 className="text-xl font-bold">
+                  Consumer electronic and gadgets
+                </h2>
+              </div>
+
+              {/* Grid of product images */}
+              <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
+                {images.map((img, idx) => (
+                  <div className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex">
+                    <div className="relative flex flex-col lg:gap-0 gap-3 lg:flex-row lg:justify-between lg:w-full lg:p-2 items-start">
+                      <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
+                        <h6 className="xl:text-md text-sm">Soft chairs</h6>
+                        <p className="text-xs md:text-sm text-gray-600">
+                          From USD 19
+                        </p>
+                      </div>
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`watch${idx}`}
+                        className="min-w-32 min-h-28 order-1 lg:order-none lg:min-w-8 lg:min-h-8 relative lg:w-1/2 h-20 object-contain"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          </div>
+
           {/* supplier inquiry */}
           <div className="relative my-5 shadow-md overflow-hidden rounded-md">
             <div className="w-full flex bg-center">
               <img
                 src="/shopingDashboardPic.jpg"
                 alt="womenShopping"
-                className="absolute h-[55vh] w-full"
+                className="absolute h-[55vh] w-full bg-blend-overlay inset-1 object-cover bg-center"
               />
             </div>
-            <div className="bg-blue-700 opacity-85  relative h-[55vh] w-full flex flex-row text-white">
-              <div className="w-2/5 flex-col flex text-wrap ml-10 mt-10 p-3">
-                <h1 className="text-4xl font-bold">
+            <div className="bg-blue-700 opacity-85 relative h-full w-full p-3 flex flex-row text-white">
+              <div className="w-2/5 flex-col md:flex hidden text-wrap ml-10 mt-10 p-3">
+                <h1 className="lg:text-4xl text-2xl font-bold">
                   An easy way to send requests to all suppliers
                 </h1>
-                <p className="text-lg">
+                <p className="lg:text-lg text-md">
                   {" "}
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                   do eiusmod tempor incididunt.
                 </p>
               </div>
 
-              <div className="w-3/5  justify-center flex items-center">
-                <div className="w-2/3 text-black justify-center flex">
-                  <div className="">
-                    <form className="gap-5 flex flex-col p-8 bg-slate-100 rounded-lg">
-                      <h2 className="text-2xl">Send qoute to suppliers</h2>
+              <div className="md:w-3/5 w-full justify-center flex items-center">
+                <div className="md:w-2/3 justify-center flex items-center">
+                    <form className="lg:gap-5 gap-2 flex xl:text-lg text-black lg:text-md text-sm flex-col lg:p-8 p-6 bg-white rounded-lg">
+                      <h2 className="text-2xl">
+                        Send qoute to suppliers
+                      </h2>
                       <input
                         type="text"
                         placeholder="What item you need?"
-                        className="p-2 text-lg w-full rounded-lg"
+                        className="p-2 w-full rounded-lg border-2"
                       />
 
                       <textarea
                         rows={2}
                         placeholder="What item you need?"
-                        className="p-2 text-lg w-full rounded-lg"
+                        className="p-2 w-full rounded-lg border-2"
                       />
-                      <div className="flex flex-row gap-4">
+                      <div className="flex lg:flex-row flex-col lg:gap-4 gap-2 text-black">
                         <input
                           type="text"
                           placeholder="What item you need?"
-                          className="p-2 text-lg w-full rounded-lg"
+                          className="p-2 w-full rounded-lg border-2"
                         />
-                        <select
-                          name="quantity"
-                          className="p-2 text-lg rounded-lg"
-                        >
+                        <select name="quantity" className="p-2 bg-white border-2 rounded-lg">
                           <option>Select quantity</option>
                           <option value={1}>1</option>
                           <option value={1}>2</option>
@@ -348,7 +419,6 @@ export default function Home() {
                         Send inquiry
                       </button>
                     </form>
-                  </div>
                 </div>
               </div>
             </div>
@@ -357,7 +427,7 @@ export default function Home() {
           <div className="my-5">
             <h1 className="text-2xl font-bold">Recommended items</h1>
           </div>
-          <div className="grid grid-flow-row grid-cols-5 gap-4 my-5 grid-rows-2">
+          <div className="grid grid-flow-row bg-white rounded-md p-2 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 my-5 xl:grid-rows-2">
             <GridPicsDesign />
             <GridPicsDesign />
             <GridPicsDesign />
@@ -372,7 +442,7 @@ export default function Home() {
           <div className="my-5">
             <h1 className="text-2xl font-bold">Our extra services</h1>
           </div>
-          <div className="flex gap-4 my-5">
+          <div className="grid grid-flow-row xl:grid-cols-5 lg:grid-cols-4 bg-white rounded-md p-4 md:grid-cols-3 sm:grid-cols-2 gap-4 my-5">
             <ExtraServices />
             <ExtraServices />
             <ExtraServices />
@@ -383,8 +453,8 @@ export default function Home() {
             <h1 className="text-2xl font-bold">Suppliers by region</h1>
           </div>
           <div>
-            <div className="flex my-5">
-              <div className="grid grid-cols-5 gap-x-4">
+            <div className="flex my-5 justify-center">
+              <div className="grid grid-flow-row xl:grid-cols-5 md:grid-cols-4 bg-white rounded-md p-4 sm:grid-cols-3 grid-cols-2 gap-4 my-5 gap-x-4">
                 {countries.map((con) => (
                   <SupplierRegion con={con} />
                 ))}
