@@ -130,9 +130,9 @@ export default function Home() {
   return (
     <div>
       <div className="flex flex-col justify-center items-center bg-gray-50">
-        <div className="px-1 py-5 gap-3 md:w-10/12 md:flex hidden bg-gray-100 shadow-lg my-5 rounded-lg h-[60vh]">
+        <div className="md:px-1 md:py-5 gap-3 w-10/12 flex bg-gray-100 shadow-lg my-5 rounded-lg md:h-[60vh] sm:h-[40vh] h-[25vh]">
           {/* Cetagory List */}
-          <div className="lg:w-3/12 md:w-4/12 justify-start flex ">
+          <div className="lg:w-3/12 md:w-4/12 justify-start lg:flex hidden ">
             <div className="w-full ml-3 overflow-y-auto text-wrap overflow-scroll  ">
               <ul className="ml-3 text-lg p-3 items-center hover:cursor-pointer">
                 <li className="p-2 active:bg-slate-400 hover:cursor-pointer not-active:bg-white">
@@ -166,22 +166,22 @@ export default function Home() {
             </div>
           </div>
           {/* shopingDashboardPic & userInfo */}
-          <div className="lg:w-9/12 md:w-4/6 flex gap-3 flex-row">
+          <div className="lg:w-9/12 w-full flex lg:gap-3 flex-row">
             {/* shopingDashboardPic */}
-            <div className="lg:w-9/12 md:w-full relative">
-              <div className="w-full flex bg-center">
+            <div className="lg:w-9/12 w-full relative">
+              <div className="w-full flex sm:object-contain object-cover">
                 <img
                   src="/shopingDashboardPic.jpg"
                   alt="womenShopping"
-                  className="absolute h-[55vh] w-full rounded-md"
+                  className="absolute md:h-[55vh] sm:h-[40vh] h-[25vh] w-full rounded-md"
                 />
               </div>
               <div className="relative ml-12 flex mt-10 flex-col w-2/4">
-                <h2 className="text-2xl">Latest trending</h2>
-                <h1 className="text-3xl text-white font-bold">
+                <h2 className="sm:text-2xl">Latest trending</h2>
+                <h1 className="sm:text-3xl text-lg text-white font-bold">
                   Electronic items
                 </h1>
-                <button className="text-lg bg-white mt-5 py-2 w-40 ">
+                <button className="sm:text-lg text-xs  bg-white sm:mt-5 sm:py-2 py-1 w-fit px-4 ">
                   Learn more
                 </button>
               </div>

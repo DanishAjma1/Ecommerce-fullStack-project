@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import BrandIdentification from "./brandIdentification.js";
 
 export default function Footer() {
 const countries = [
@@ -49,10 +50,7 @@ const countries = [
           <div className="w-10/12 flex lg:flex-row flex-col">
             <div className="lg:w-2/6 p-5 w-full">
               <div className="flex items-center">
-                <div className=" p-3 rounded-lg shadow-md shadow-indigo-950">
-                  <img src="/icon.png" alt="icon" className="w-8" />
-                </div>
-                <h1 className="font-extrabold text-2xl pl-4">The Brand</h1>
+                <BrandIdentification />
               </div>
               <p className="mt-4">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

@@ -353,46 +353,51 @@ export default function Products() {
             </div>
           </div>
           <div className="w-full px-2 overflow-y-scroll h-screen">
-            <div className="flex rounded-md px-3 py-3 bg-white justify-between border-2">
-              <div className="flex justify-center gap-1 items-center">
+            <div className="flex rounded-md px-3 py-3  lg:justify-between md:justify-center bg-white justify-around border-2">
+              <div className="lg:flex hidden justify-center gap-1 items-center">
                 <p>{fetchedItems + " items in "}</p>
                 <span className="font-semibold text-lg">Mobiles accessory</span>
               </div>
-              <div className="flex items-center gap-3">
-                <input type="checkbox" checked className="p-1" />
-                <label className="text-lg">Verified only</label>
+              <div className="flex items-center lg:justify-start lg:w-auto w-full sm:justify-center justify-between gap-3">
+                <input type="checkbox" checked className="p-1 md:block hidden" />
+                <label className="text-lg md:block hidden">Verified only</label>
+                <div className="lg:hidden flex flex-row gap-3 items-center border-2 sm:text-lg text-sm sm:py-2 py-1 sm:px-5 px-2  rounded">
+                  <img src="/icon.png" alt="icon" className="sm:w-4 w-2 sm:h-4 h-2" />
+                  <p className="">Filter</p>
+                </div>
                 <select
                   name="choice"
-                  className="py-3 pl-2 pr-8 bg-transparent rounded-md border-2"
+                  className="sm:py-3 py-1 pl-2 pr-6 bg-transparent rounded-md border-2 sm:text-lg text-sm"
                 >
                   <option value={"featured"}>Featured</option>
                   <option value={"local"}>Local</option>
                 </select>
+                
                 <div className="rounded-md border-2">
                   <button
                     className="p-[9px] border-r-2 h-full active:bg-slate-100 "
                     onClick={(e) => {
                       e.preventDefault();
-                      setFileFlow(!fileFlow);
+                      setFileFlow(true);
                     }}
                   >
                     <img
-                      src="icon.png"
+                      src="/icon.png"
                       alt="icon"
-                      className="w-6 h-full object-cover"
+                      className="sm:w-6 w-4 h-full object-cover"
                     />
                   </button>
                   <button
                     className="p-[9px] active:bg-slate-100 h-full"
                     onClick={(e) => {
                       e.preventDefault();
-                      setFileFlow(!fileFlow);
+                      setFileFlow(false);
                     }}
                   >
                     <img
-                      src="icon.png"
+                      src="/icon.png"
                       alt="icon"
-                      className="w-6 h-full object-cover"
+                      className="sm:w-6 w-4 h-full object-cover"
                     />
                   </button>
                 </div>

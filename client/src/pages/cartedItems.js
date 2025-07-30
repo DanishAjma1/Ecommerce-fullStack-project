@@ -91,8 +91,8 @@ export default function CartedItems() {
               </div>
             </div>
             {/* coupons */}
-            <div className="flex lg:w-3/12 w-full sm:justify-center">
-              <div className="flex flex-col sm:w-2/3 w-full lg:px-4">
+            <div className="flex lg:w-4/12 w-full sm:justify-center">
+              <div className="flex flex-col lg:w-full sm:w-2/3 w-full lg:px-4">
                 <div className="p-4 bg-white rounded-md shadow-md gap-2 lg:flex hidden flex-col">
                   <p className="">Have a coupon?</p>
                   <div className="flex border-2 justify-center xl:text-lg text-sm items-center rounded-md overflow-hidden">
@@ -125,8 +125,8 @@ export default function CartedItems() {
                     <p>Total:</p>
                     <p className="xl:text-xl text-lg font-bold">$3242.23</p>
                   </div>
-                  <div className="py-4 max-w-40">
-                    <button className="text-white rounded-md px-4 xl:py-4 py-2 bg-green-600 w-full">
+                  <div className="py-4 w-full justify-center flex">
+                    <button className="text-white rounded-md px-4 xl:py-4 py-2 max-w-40 bg-green-600 w-full">
                       Checkout
                     </button>
                   </div>
