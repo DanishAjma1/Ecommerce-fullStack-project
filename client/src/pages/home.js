@@ -49,12 +49,12 @@ const countries = [
 
 const images = [
   "shirt.jpg",
+  "mobiles.jpg",
+  "photoCamera.jpg",
+  "sneakers.jpg",
   "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
+  "tablet.jpg",
+  "professionalCamer.jpg",
   "watch.jpg",
 ];
 export default function Home() {
