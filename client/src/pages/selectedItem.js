@@ -1,6 +1,26 @@
-import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function SelectedItem() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { product } = location.state;
+  const URL = "http://localhost:5000";
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/products/getProducts`)
+      .then((response) => {
+        setProducts(response.data || []);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      });
+  }, []);
+
   const HandleResponsive = () => {
     return (
       <div className="flex flex-col w-full">
@@ -23,7 +43,7 @@ export default function SelectedItem() {
                   Model
                 </td>
                 <td className="text-gray-600 w-2/3 px-2 py-2 border">
-                  #2142512
+                  {product.model || "Unknown"}
                 </td>
               </tr>
               <tr>
@@ -47,7 +67,7 @@ export default function SelectedItem() {
                   Size
                 </td>
                 <td className="text-gray-600 w-2/3 px-2 py-2 border">
-                  34mm *450mm *19mm
+                  {product.size || "Unknown"}
                 </td>
               </tr>
 
@@ -56,7 +76,7 @@ export default function SelectedItem() {
                   Memory
                 </td>
                 <td className="text-gray-600 w-2/3 px-2 py-2 border">
-                  32GB RAM, 256GB SSD
+                  {product.memory || "Unknown"}
                 </td>
               </tr>
             </tbody>
@@ -79,11 +99,11 @@ export default function SelectedItem() {
           </div>
           <div className="flex flex-row gap-3 items-center">
             <img src="/icon.png" alt="Selected Item" className="w-4 h-4 mb-2" />
-            <h2 className="mb-2">Germany,Berlin</h2>
+            <h2 className="mb-2">Verified Seller</h2>
           </div>
           <div className="flex flex-row gap-3 items-center">
             <img src="/icon.png" alt="Selected Item" className="w-4 h-4 mb-2" />
-            <h2 className="mb-2">Germany,Berlin</h2>
+            <h2 className="mb-2">Worldwide shipping</h2>
           </div>
           <div className="hidden flex-col w-full lg:flex gap-3">
             <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
@@ -106,7 +126,7 @@ export default function SelectedItem() {
             <div className="flex w-full lg:w-10/12 flex-col lg:p-0 p-4 bg-white md:flex-row lg:bg-transparent bg-whitelg:rounded-none rounded-md lg:shadow-none shadow-md justify-center md:items-start items-center gap-4">
               <div className="flex sm:h-80 min-h-60 justify-center border-2 rounded-md bg-white sm:w-6/12 w-8/12 md:flex-row">
                 <img
-                  src="/shirt.jpg"
+                  src={product.imageUri}
                   className="w-full sm:h-79 m-h-59 object-contain"
                   alt="Selected Item"
                 />
@@ -116,10 +136,10 @@ export default function SelectedItem() {
                 <div className="flex sm:-order-none order-2 flex-col px-2">
                   <p className="text-green-500">In Stock</p>
                   <h1 className="md:text-2xl text-lg font-bold md:mt-4 mt-2">
-                    Classic Check shirt for men,in cotton fabrics
+                    {product.description}
                   </h1>
                   <p className="text-red-500 text-lg font-medium md:hidden block">
-                    $32.34
+                    ${product.price}
                   </p>
                 </div>
                 <div className="flex sm:-order-none order-1 md:text-lg text-sm flex-row items-start sm:items-center gap-1 md:gap-2 flex-nowrap">
@@ -135,7 +155,7 @@ export default function SelectedItem() {
                       alt="Reviews"
                       className="inline-block w-4 mr-1 md:ml-3 ml-1"
                     />
-                    100 Reviews
+                    {product.reviews || "10"} Reviews
                   </p>
                   <p className="text-gray-600">
                     <img
@@ -143,35 +163,54 @@ export default function SelectedItem() {
                       alt="sold"
                       className="inline-block w-4 mr-1 md:ml-3 ml-1"
                     />
-                    100 Sold
+                    {product.sold || "10"} Sold
                   </p>
                 </div>
-                {/* inquiry button */}
-                <button className="bg-blue-500 md:-order-none order-3 md:hidden flex justify-center text-white px-4 py-2 rounded-md my-2">
-                  Send inquiry
-                </button>
                 {/* prices */}
                 <div className="md:flex w-full sm:-order-none hidden bg-orange-100 rounded-md items-center mt-2">
                   <div className="flex flex-row sm:w-3/4 w-full p-2 justify-around items-center">
                     <div className="flex flex-col gap-1 px-5 w-1/3 justify-center">
-                      <p className="text-black text-xl font-medium active:text-red-500">
-                        $49.99
+                      <p className="text-black text-lg font-medium active:text-red-500">
+                        ${product.price}
                       </p>
                       <span className="text-gray-500 text-sm">50-100 pcs</span>
                     </div>
                     <div className="flex flex-col gap-1 px-5 w-1/3 border-l-2 justify-center">
-                      <p className="text-black text-xl font-medium active:text-red-500">
-                        $40.99
+                      <p className="text-black text-lg font-medium active:text-red-500">
+                        ${product.price - 10}
                       </p>
                       <span className="text-gray-500 text-sm">50-100 pcs</span>
                     </div>
                     <div className="flex flex-col gap-1 px-5 w-1/3 border-l-2 justify-center">
-                      <p className="text-black text-xl font-medium active:text-red-500">
-                        $30.99
+                      <p className="text-black text-lg font-medium active:text-red-500">
+                        ${product.price - 20}
                       </p>
                       <span className="text-gray-500 text-sm">50-100 pcs</span>
                     </div>
                   </div>
+                </div>
+                {/* Cart button */}
+                <div className="flex flex-row md:justify-evenly md:gap-0 gap-5  items-center">
+                  <button
+                    className="bg-blue-500 md:w-40 flex justify-center text-white px-4 py-2 rounded-md my-5"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      localStorage.setItem(product);
+                    }}
+                  >
+                    Add to Cart
+                  </button>
+
+                  <button
+                    className="bg-green-500 md:w-40 flex justify-center text-white px-4 py-2 rounded-md my-5"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      localStorage.setItem(product);
+                      navigate("/cartitems");
+                    }}
+                  >
+                    Buy now
+                  </button>
                 </div>
                 {/* description */}
                 <div className="sm:-order-none order-4">
@@ -188,19 +227,19 @@ export default function SelectedItem() {
                     <div className="flex flex-row items-center justify-between">
                       <p className="text-gray-400 sm:w-1/3 w-1/2">Type:</p>
                       <span className="text-gray-800 sm:w-2/3 w-1/2">
-                        Classic Shirt
+                        {product.title}
                       </span>
                     </div>
                     <div className="flex flex-row items-center">
                       <p className="text-gray-400 sm:w-1/3 w-1/2">Material:</p>
                       <span className="text-gray-800 sm:w-2/3 w-1/2">
-                        Cotton
+                        {product.material || "Unknown"}
                       </span>
                     </div>
                     <div className="flex flex-row items-center justify-between">
                       <p className="text-gray-400 sm:w-1/3 w-1/2">Design:</p>
                       <span className="text-gray-800 sm:w-2/3 w-1/2">
-                        Modern nice
+                        {product.design || "Unknown"}
                       </span>
                     </div>
                   </div>
@@ -235,6 +274,7 @@ export default function SelectedItem() {
                 </div>
               </div>
             </div>
+            {/* Supplier deiv */}
             <HandleSupplierDiv />
           </div>
           {/* Description */}
@@ -257,6 +297,7 @@ export default function SelectedItem() {
                     </p>
                   </div>
                 </div>
+                {/* you may like */}
                 <div className="sm:flex hidden">
                   <HandleResponsive />
                 </div>
@@ -266,45 +307,58 @@ export default function SelectedItem() {
               <h4 className="text-black block font-medium px-2 pt-2">
                 You may like
               </h4>
-              <div className="flex flex-col gap-4 overflow-y-scroll h-auto">
-                {[...Array(4)].map((_, index) => (
-                  <div
-                    className="flex flex-row gap-2 p-3 min-w-4/5"
-                    key={index}
-                  >
-                    <img
-                      src="/shirt.jpg"
-                      className="min-w-20 h-20 object-contain border-2 rounded-md"
-                      alt="You may like"
-                    />
-                    <div className="flex flex-col gap-1 flex-wrap text-wrap">
-                      <p>Casual Shirt sets Elegant Formal</p>
-                      <span className="text-gray-500"> $29.99</span>
+              <div className="flex flex-col gap-4 overflow-y-scroll h-auto hover:cursor-pointer">
+                {products.slice(0, 5).map((pro, index) =>
+                  index === 4 ? (
+                    <div>
+                      <Link to={"/products"} className="text-blue-500 pl-5">
+                        see more...
+                      </Link>
                     </div>
-                  </div>
-                ))}
+                  ) : (
+                    <div
+                      className="flex flex-row gap-2 p-3 min-w-4/5"
+                      key={index}
+                    >
+                      <img
+                        src={pro.imageUri}
+                        className="w-20 h-20 object-contain border-2 rounded-md"
+                        alt="You may like"
+                      />
+                      <div className="flex flex-col gap-1 flex-wrap text-wrap">
+                        <p>{pro.title}</p>
+                        <span className="text-gray-500"> ${pro.price}</span>
+                      </div>
+                    </div>
+                  )
+                )}
               </div>
             </div>
           </div>
           {/* Similar products */}
           <div className="flex flex-col overflow-y-scroll mt-4 p-2 border-spacing-3 border my-5 w-full bg-white rounded-md shadow-md">
-            <h4 className="text-black block font-medium p-2">
+            <h4
+              className="text-black block font-medium p-2 w-fit hover:text-blue-500 hover:cursor-pointer"
+              onClick={() => {
+                navigate("/products");
+              }}
+            >
               Similar products
             </h4>
             <div className="flex flex-row gap-2 overflow-y-scroll h-auto">
-              {[...Array(8)].map((_, index) => (
+              {products.map((pro, index) => (
                 <div
-                  className="flex flex-col justify-center items-center gap-2 border-2 p-4 w-fit"
+                  className="flex flex-col justify-center items-center hover:cursor-pointer gap-2 border-2 p-4 w-fit"
                   key={index}
                 >
                   <img
-                    src="/shirt.jpg"
+                    src={pro.imageUri}
                     className="min-w-40 h-40 bg-slate-100 object-contain border-2 rounded-md"
                     alt="You may like"
                   />
                   <div className="flex flex-col gap-1 flex-wrap text-wrap">
-                    <p>Casual Shirt sets Elegant Formal</p>
-                    <span className="text-gray-500"> $29.99</span>
+                    <p>{pro.description}</p>
+                    <span className="text-gray-500"> ${pro.price}</span>
                   </div>
                 </div>
               ))}

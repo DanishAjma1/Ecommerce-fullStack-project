@@ -1,4 +1,6 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const countries = [
   { name: "USA", flag: "🇺🇸", desc: "Leading global economy and innovation" },
@@ -47,17 +49,23 @@ const countries = [
   { name: "UAE", flag: "🇦🇪", desc: "Modern cities and desert luxury" },
 ];
 
-const images = [
-  "shirt.jpg",
-  "mobiles.jpg",
-  "photoCamera.jpg",
-  "sneakers.jpg",
-  "watch.jpg",
-  "tablet.jpg",
-  "professionalCamer.jpg",
-  "watch.jpg",
-];
 export default function Home() {
+  const URL = "http://localhost:5000";
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/products/getProducts`)
+      .then((response) => {
+        setProducts(response.data || []);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      });
+  }, []);
+
   const ExtraServices = () => {
     return (
       <div className="min-w-40 max-w-60 w-full md:w-auto rounded-lg justify-self-center bg-white overflow-hidden shadow hover:shadow-lg transition">
@@ -92,15 +100,26 @@ export default function Home() {
       </div>
     );
   };
-  const GridPicsDesign = () => {
+  const GridPics = () => {
     return (
-      <div className="flex flex-col text-black justify-center shadow-md items-center p-5 rounded-lg bg-white">
-        <img src="/shirt.jpg" alt="shirt" className="h-52" />
-        <div className="mt-5 flex text-center xl:text-start flex-col">
-          <h1 className="text-lg font-bold">$10.30</h1>
-          <p className="text-gray-400">T-shirt with mutiple colors,for men</p>
-        </div>
-      </div>
+      <>
+        {products.map((pro, idx) => (
+          <div
+            key={idx}
+            className="flex flex-col text-black justify-center shadow-md items-center p-5 rounded-lg bg-white"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(`/products/${pro._id}`,{state:{product: pro}});
+            }}
+          >
+            <img src={pro.imageUri} alt="shirt" className="h-52" />
+            <div className="mt-5 flex text-center xl:text-start flex-col">
+              <h1 className="text-lg font-bold">${pro.price}</h1>
+              <p className="text-gray-400">{pro.description}</p>
+            </div>
+          </div>
+        ))}
+      </>
     );
   };
   const TimeDiv = ({ heading, subHeading }) => {
@@ -116,10 +135,14 @@ export default function Home() {
       </div>
     );
   };
-  const SaleItemDiv = ({ heading, subHeading }) => {
+  const SaleItemDiv = ({ heading, subHeading, imageUri }) => {
     return (
       <div className="min-w-1/5 flex flex-col justify-center items-center p-5 border-r-2">
-        <img src="/watch.jpg" alt="watch" className="rounded-md min-w-24" />
+        <img
+          src={imageUri}
+          alt="watch"
+          className="rounded-md min-w-24 max-h-32"
+        />
         <p className="text-lg my-3">{heading}</p>
         <p className="text-sm py-1 px-3 text-red-800 rounded-3xl bg-red-200">
           {subHeading}
@@ -255,11 +278,16 @@ export default function Home() {
                 </div>
               </div>
               <div className="xl:w-4/5 w-full overflow-y-scroll flex flex-row">
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-25%"} />
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-23%"} />
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-34%"} />
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-24%"} />
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-50%"} />
+                {products.map((pro, index) => {
+                  return (
+                    <SaleItemDiv
+                      key={index}
+                      heading={pro.title}
+                      imageUri={pro.imageUri}
+                      subHeading={"-50%"}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -269,7 +297,7 @@ export default function Home() {
               {/* Large screen left image with text */}
               <div className="hidden lg:block col-span-2 relative">
                 <img
-                  src="/watch.jpg"
+                  src="/sofa.jpg"
                   alt="Featured Watch"
                   className="w-full h-full object-cover rounded-l-md"
                 />
@@ -288,18 +316,18 @@ export default function Home() {
 
               {/* Grid of product images */}
               <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
-                {images.map((img, idx) => (
+                {products.slice(0, products.length - 1).map((pro, idx) => (
                   <div className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex">
                     <div className="relative flex flex-col lg:gap-0 gap-3 lg:flex-row lg:justify-between lg:w-full lg:p-2 items-start">
                       <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
-                        <h6 className="xl:text-md text-sm">Soft chairs</h6>
+                        <h6 className="xl:text-md text-sm">{pro.title}</h6>
                         <p className="text-xs md:text-sm text-gray-600">
                           From USD 19
                         </p>
                       </div>
                       <img
                         key={idx}
-                        src={img}
+                        src={pro.imageUri}
                         alt={`watch${idx}`}
                         className="min-w-32 min-h-28 order-1 lg:order-none lg:min-w-8 lg:min-h-8 relative lg:w-1/2 h-20 object-contain"
                       />
@@ -314,7 +342,7 @@ export default function Home() {
               {/* Large screen left image with text */}
               <div className="hidden lg:block col-span-2 relative">
                 <img
-                  src="/watch.jpg"
+                  src="/professionalCamer.jpg"
                   alt="Featured Watch"
                   className="w-full h-full object-cover rounded-l-md"
                 />
@@ -337,18 +365,18 @@ export default function Home() {
 
               {/* Grid of product images */}
               <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
-                {images.map((img, idx) => (
+                {products.slice(0, products.length - 1).map((pro, idx) => (
                   <div className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex">
                     <div className="relative flex flex-col lg:gap-0 gap-3 lg:flex-row lg:justify-between lg:w-full lg:p-2 items-start">
                       <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
-                        <h6 className="xl:text-md text-sm">Soft chairs</h6>
+                        <h6 className="xl:text-md text-sm">{pro.title}</h6>
                         <p className="text-xs md:text-sm text-gray-600">
                           From USD 19
                         </p>
                       </div>
                       <img
                         key={idx}
-                        src={img}
+                        src={pro.imageUri}
                         alt={`watch${idx}`}
                         className="min-w-32 min-h-28 order-1 lg:order-none lg:min-w-8 lg:min-h-8 relative lg:w-1/2 h-20 object-contain"
                       />
@@ -382,43 +410,44 @@ export default function Home() {
 
               <div className="md:w-3/5 w-full justify-center flex items-center">
                 <div className="md:w-2/3 justify-center flex items-center">
-                    <form className="lg:gap-5 gap-2 flex xl:text-lg text-black lg:text-md text-sm flex-col lg:p-8 p-6 bg-white rounded-lg">
-                      <h2 className="text-2xl">
-                        Send qoute to suppliers
-                      </h2>
+                  <form className="lg:gap-5 gap-2 flex xl:text-lg text-black lg:text-md text-sm flex-col lg:p-8 p-6 bg-white rounded-lg">
+                    <h2 className="text-2xl">Send qoute to suppliers</h2>
+                    <input
+                      type="text"
+                      placeholder="What item you need?"
+                      className="p-2 w-full rounded-lg border-2"
+                    />
+
+                    <textarea
+                      rows={2}
+                      placeholder="What item you need?"
+                      className="p-2 w-full rounded-lg border-2"
+                    />
+                    <div className="flex lg:flex-row flex-col lg:gap-4 gap-2 text-black">
                       <input
                         type="text"
                         placeholder="What item you need?"
                         className="p-2 w-full rounded-lg border-2"
                       />
-
-                      <textarea
-                        rows={2}
-                        placeholder="What item you need?"
-                        className="p-2 w-full rounded-lg border-2"
-                      />
-                      <div className="flex lg:flex-row flex-col lg:gap-4 gap-2 text-black">
-                        <input
-                          type="text"
-                          placeholder="What item you need?"
-                          className="p-2 w-full rounded-lg border-2"
-                        />
-                        <select name="quantity" className="p-2 bg-white border-2 rounded-lg">
-                          <option>Select quantity</option>
-                          <option value={1}>1</option>
-                          <option value={1}>2</option>
-                          <option value={1}>3</option>
-                          <option value={1}>4</option>
-                          <option value={1}>5</option>
-                        </select>
-                      </div>
-                      <button
-                        type="submit"
-                        className="bg-blue-700 w-fit text-white px-3 py-2 rounded-lg"
+                      <select
+                        name="quantity"
+                        className="p-2 bg-white border-2 rounded-lg"
                       >
-                        Send inquiry
-                      </button>
-                    </form>
+                        <option>Select quantity</option>
+                        <option value={1}>1</option>
+                        <option value={1}>2</option>
+                        <option value={1}>3</option>
+                        <option value={1}>4</option>
+                        <option value={1}>5</option>
+                      </select>
+                    </div>
+                    <button
+                      type="submit"
+                      className="bg-blue-700 w-fit text-white px-3 py-2 rounded-lg"
+                    >
+                      Send inquiry
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -428,16 +457,7 @@ export default function Home() {
             <h1 className="text-2xl font-bold">Recommended items</h1>
           </div>
           <div className="grid grid-flow-row bg-white rounded-md p-2 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 my-5 xl:grid-rows-2">
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
+            <GridPics />
           </div>
           <div className="my-5">
             <h1 className="text-2xl font-bold">Our extra services</h1>

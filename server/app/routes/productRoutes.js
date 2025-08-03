@@ -1,46 +1,45 @@
 import { Router } from "express";
-import Product from "../models/product.js";
 import DBConnection from "../config/connectDB.js";
-import multer from "multer";
-import fs from "fs";
+import Product from "../models/product.js";
 const productRouter = Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = "uploads/";
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage });
-
-productRouter.post(
-  "/adminPortal/insertProduct",
-  upload.single("image"),
-  async (req, res) => {
-    try {
-      await DBConnection();
-      let imageUri = "";
-      if (req.file) {
-        imageUri = `${Date.now()}-${req.file.filename}`;
-      }
-      console.log(req.body);
-      const product = new Product({
-        ...req.body,
-        imageUri: imageUri,
-      });
-      console.log(product);
-      await product.save();
-      res.status(201).json({ message: "product inserted successfully.." });
-    } catch (err) {
-      res.status(500).send(err);
-    }
+productRouter.get("/getProducts", async (req, res) => {
+  try {
+    await DBConnection();
+    const products = await Product.find();
+    res
+      .status(200)
+      .json(products);
+  } catch (err) {
+    console.log(err);
+    res
+      .status(401)
+      .json({ message: "bad request while fetching the products" });
   }
-);
+});
+
+import mongoose from "mongoose";
+
+productRouter.get("/get-products-with-id", async (req, res) => {
+  try {
+    const id = req.query.id;
+    console.log(id);
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid or missing product id" });
+    }
+    await DBConnection();
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    console.log(product);
+    res.status(200).json(product);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Server error while fetching the product with id",
+    });
+  }
+});
 
 export default productRouter;
