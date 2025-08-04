@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { addItemToLocalStorage } from "../componants/addToLocalStorage.js";
 
 export default function SelectedItem() {
   const location = useLocation();
@@ -11,7 +12,10 @@ export default function SelectedItem() {
 
   useEffect(() => {
     axios
-      .get(`${URL}/products/getProducts`)
+      .get(
+        `${URL}/products/
+        getProducts`
+      )
       .then((response) => {
         setProducts(response.data || []);
       })
@@ -189,13 +193,13 @@ export default function SelectedItem() {
                     </div>
                   </div>
                 </div>
-                {/* Cart button */}
+                {/* Add to cart and Buy now button */}
                 <div className="flex flex-row md:justify-evenly md:gap-0 gap-5  items-center">
                   <button
                     className="bg-blue-500 md:w-40 flex justify-center text-white px-4 py-2 rounded-md my-5"
                     onClick={(e) => {
                       e.preventDefault();
-                      localStorage.setItem(product);
+                      addItemToLocalStorage(product);
                     }}
                   >
                     Add to Cart
@@ -205,7 +209,7 @@ export default function SelectedItem() {
                     className="bg-green-500 md:w-40 flex justify-center text-white px-4 py-2 rounded-md my-5"
                     onClick={(e) => {
                       e.preventDefault();
-                      localStorage.setItem(product);
+                      addItemToLocalStorage(product);
                       navigate("/cartitems");
                     }}
                   >
@@ -274,7 +278,7 @@ export default function SelectedItem() {
                 </div>
               </div>
             </div>
-            {/* Supplier deiv */}
+            {/* Supplier div */}
             <HandleSupplierDiv />
           </div>
           {/* Description */}
