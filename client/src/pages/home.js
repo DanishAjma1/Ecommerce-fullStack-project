@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const countries = [
   { name: "USA", flag: "🇺🇸", desc: "Leading global economy and innovation" },
@@ -49,8 +49,10 @@ const countries = [
   { name: "UAE", flag: "🇦🇪", desc: "Modern cities and desert luxury" },
 ];
 
-export default function Home() {
+export default function Home({querySearch}) {
+  console.log(querySearch)
   const URL = "http://localhost:5000";
+  const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
@@ -59,12 +61,24 @@ export default function Home() {
       .get(`${URL}/products/getProducts`)
       .then((response) => {
         setProducts(response.data || []);
+        setAllProducts(response.data || []);
       })
       .catch((error) => {
         console.error("Failed to fetch products:", error);
         setProducts([]);
+        setAllProducts([]);
       });
   }, []);
+  useEffect(() => {
+    if (!querySearch && allProducts.length !== 0) {
+      setProducts(allProducts);
+      return;
+    };
+    const filteredProducts = allProducts.filter((pro) =>
+      pro.title.toLowerCase().includes(querySearch.toLowerCase())
+    );
+    setProducts(filteredProducts);
+  }, [querySearch, allProducts]);
 
   const ExtraServices = () => {
     return (
@@ -103,13 +117,14 @@ export default function Home() {
   const GridPics = () => {
     return (
       <>
-        {products.map((pro, idx) => (
+        {(querySearch === ""? allProducts : products)
+        .map((pro, idx) => (
           <div
             key={idx}
             className="flex flex-col text-black justify-center shadow-md items-center p-5 rounded-lg bg-white"
             onClick={(e) => {
               e.preventDefault();
-              navigate(`/products/${pro._id}`,{state:{product: pro}});
+              navigate(`/products/${pro._id}`, { state: { product: pro } });
             }}
           >
             <img src={pro.imageUri} alt="shirt" className="h-52" />
@@ -135,15 +150,20 @@ export default function Home() {
       </div>
     );
   };
-  const SaleItemDiv = ({ heading, subHeading, imageUri }) => {
+  const SaleItemDiv = ({ heading, subHeading, imageUri, onClick }) => {
     return (
-      <div className="min-w-1/5 flex flex-col justify-center items-center p-5 border-r-2">
-        <img
-          src={imageUri}
-          alt="watch"
-          className="rounded-md min-w-24 max-h-32"
-        />
-        <p className="text-lg my-3">{heading}</p>
+      <div
+        className="min-w-1/5 flex flex-col justify-center items-center p-5 border-r-2"
+        onClick={onClick}
+      >
+        <div className="md:h-48 h-40">
+          <img
+            src={imageUri}
+            alt="watch"
+            className="rounded-md min-w-24 h-28 object-contain"
+          />
+          <p className="md:text-lg text-sm my-3">{heading}</p>
+        </div>
         <p className="text-sm py-1 px-3 text-red-800 rounded-3xl bg-red-200">
           {subHeading}
         </p>
@@ -278,13 +298,19 @@ export default function Home() {
                 </div>
               </div>
               <div className="xl:w-4/5 w-full overflow-y-scroll flex flex-row">
-                {products.map((pro, index) => {
+                {allProducts.map((pro, index) => {
                   return (
                     <SaleItemDiv
                       key={index}
                       heading={pro.title}
                       imageUri={pro.imageUri}
                       subHeading={"-50%"}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/products/${pro._id}`, {
+                          state: { product: pro },
+                        });
+                      }}
                     />
                   );
                 })}
@@ -316,8 +342,16 @@ export default function Home() {
 
               {/* Grid of product images */}
               <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
-                {products.slice(0, products.length - 1).map((pro, idx) => (
-                  <div className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex">
+                {allProducts.slice(0, products.length - 1).map((pro, idx) => (
+                  <div
+                    className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/products/${pro._id}`, {
+                        state: { product: pro },
+                      });
+                    }}
+                  >
                     <div className="relative flex flex-col lg:gap-0 gap-3 lg:flex-row lg:justify-between lg:w-full lg:p-2 items-start">
                       <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
                         <h6 className="xl:text-md text-sm">{pro.title}</h6>
@@ -365,8 +399,16 @@ export default function Home() {
 
               {/* Grid of product images */}
               <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
-                {products.slice(0, products.length - 1).map((pro, idx) => (
-                  <div className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex">
+                {allProducts.slice(0, products.length - 1).map((pro, idx) => (
+                  <div
+                    className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/products/${pro._id}`, {
+                        state: { product: pro },
+                      });
+                    }}
+                  >
                     <div className="relative flex flex-col lg:gap-0 gap-3 lg:flex-row lg:justify-between lg:w-full lg:p-2 items-start">
                       <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
                         <h6 className="xl:text-md text-sm">{pro.title}</h6>

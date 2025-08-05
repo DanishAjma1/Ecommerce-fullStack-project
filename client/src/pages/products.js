@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Products() {
+export default function Products({querySearch}) {
   const categories = [
     "Select Category",
     "All Categories",
@@ -226,7 +226,7 @@ export default function Products() {
             <img
               src={product.imageUri}
               alt="product"
-              className="w-1/4 h-48 object-contain"
+              className="sm:w-1/4 h-48 object-contain"
             />
             <div className="flex flex-col w-3/4 p-3">
               <h4 className="text-lg font-medium">{product.title}</h4>
@@ -250,22 +250,21 @@ export default function Products() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-flow-row border-2 relative rounded-md p-3 bg-white">
+          <div className="grid grid-flow-row border-2 relative rounded-md p-3 bg-white h-full">
             <div className="absolute right-5 top-5 w-10 h-10 border-2 rounded-md flex items-center justify-center bg-white shadow-sm">
               <img
                 src="/icon.png"
                 alt="product"
-                className="cursor-pointer hover:bg-slate-100 w-6 object-fill"
+                className="cursor-pointer hover:bg-slate-100 w-6 object-contain"
               />
             </div>
             
             <img
               src = {product.imageUri}
               alt="product"
-              className="m-w-1/4 h-48 object-contain justify-self-center"
+              className="min-w-1/4  flex-wrap sm:h-48 overflow-hidden object-contain justify-self-center"
             />
-            {console.log(product.imageUri)}
-            <div className="flex flex-col w-3/4 p-3">
+            <div className="flex flex-col sm:w-3/4 p-3">
               <h4 className="text-lg font-medium">{product.title}</h4>
               <span className="text-black mt-3 text-2xl font-medium">
                 ${product.price}
@@ -294,12 +293,14 @@ export default function Products() {
   };
   const URL = "http://localhost:5000";
   const [products, setProducts] = useState([]);
+    const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
     axios
       .get(`${URL}/products/getProducts`)
       .then((response) => {
         setProducts(response.data || []);
+        setAllProducts(response.data || []);
         setFetchedItems((response.data || []).length);
       })
       .catch((error) => {
@@ -307,6 +308,17 @@ export default function Products() {
         setProducts([]);
       });
   }, []);
+
+  useEffect(() => {
+   if (!querySearch || allProducts.length === 0) {
+    setProducts(allProducts)
+    return;
+   };
+    const filteredProducts = allProducts.filter((pro) =>
+      pro.title.toLowerCase().includes(querySearch.toLowerCase())
+    );
+    setProducts(filteredProducts);
+  }, [querySearch, allProducts]);
 
   return (
     <div>
@@ -417,7 +429,7 @@ export default function Products() {
                     }}
                   >
                     <img
-                      src="/icon.png"
+                      src="/inFileForm.png"
                       alt="icon"
                       className="sm:w-6 w-4 h-full object-cover"
                     />
@@ -430,7 +442,7 @@ export default function Products() {
                     }}
                   >
                     <img
-                      src="/icon.png"
+                      src="/inGridForm.png"
                       alt="icon"
                       className="sm:w-6 w-4 h-full object-cover"
                     />
@@ -442,13 +454,13 @@ export default function Products() {
             <div>
               {fileFlow ? (
                 <div className="grid grid-cols-1 gap-4 mt-4 hover:cursor-pointer">
-                  {products.map((pro, idx) => (
+                  {(querySearch === ""? allProducts: products).map((pro, idx) => (
                     <Products key={idx} product={pro} />
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4 hover:cursor-pointer">
-                  {products.map((pro, idx) => (
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4 hover:cursor-pointer">
+                  {(querySearch === ""? allProducts: products).map((pro, idx) => (
                     <Products key={idx} product={pro} />
                   ))}
                 </div>

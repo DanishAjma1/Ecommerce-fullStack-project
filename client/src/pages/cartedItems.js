@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { addItemToLocalStorage } from "../componants/addToLocalStorage.js";
 import { removeItemFromLocalStorage } from "../componants/removeFromLocalStorage.js";
+import { getItemsFromLocalStorage } from "../componants/getItemFromLocalStorage.js";
 
 export default function CartedItems() {
   const [cartedItems, setCartedItems] = useState([]);
@@ -12,20 +13,11 @@ export default function CartedItems() {
   const [total, setTotal] = useState(0);
   const tax = 14.21;
 
-  const getItemsFromLocalStorage = () => {
-    const items = JSON.parse(localStorage.getItem("cartItems")) || [];
-    if (items) {
-      const updatedCartItems = [...items];
-      updatedCartItems.map((_item, index) => {
-        updatedCartItems[index] = { ...updatedCartItems[index], quantity: 1 };
-      });
-      setCartedItems(updatedCartItems);
-    }
-  };
-
   const calculateTotal = () => {
     const newSubTotal = cartedItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,0 );
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
     setSubTotal(newSubTotal);
     const newDiscount = newSubTotal * 0.25;
     setDiscount(newDiscount);
@@ -33,6 +25,7 @@ export default function CartedItems() {
   };
 
   useEffect(() => {
+    setCartedItems(getItemsFromLocalStorage);
     axios
       .get(`${URL}/products/getProducts`)
       .then((response) => {
@@ -42,10 +35,7 @@ export default function CartedItems() {
         console.error("Failed to fetch products:", error);
         setProducts([]);
       });
-  },[]);
-  useEffect(()=>{
-    getItemsFromLocalStorage();
-  },[cartedItems])
+  }, []);
 
   useEffect(() => {
     calculateTotal();
@@ -90,11 +80,19 @@ export default function CartedItems() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 removeItemFromLocalStorage(item);
+                                setCartedItems(
+                                  cartedItems.filter((cartItem) => {
+                                    return cartItem._id !== item._id;
+                                  })
+                                );
                               }}
                             >
                               Remove
                             </button>
-                            <button className="text-blue-400 px-2 py-1 border-2 rounded-lg ml-2">
+                            <button className="text-blue-400 px-2 py-1 border-2 rounded-lg ml-2" onClick={(e)=>{
+                              e.preventDefault();
+                              alert("The item is already saved in carted items list,don't worry..")
+                            }}>
                               Save for later
                             </button>
                           </div>
@@ -250,7 +248,18 @@ export default function CartedItems() {
                       className="bg-transparent text-blue-500 text-sm border-2 w-fit px-2 py-1 flex items-center gap-2 rounded-md"
                       onClick={(e) => {
                         e.preventDefault();
-                        addItemToLocalStorage(pro);
+                        const updatedCartItems = [...cartedItems];
+                        let existingItemIndex = cartedItems.findIndex((item) => {
+                          return item._id === pro._id;
+                        });
+                        if (existingItemIndex !== -1) {
+                          updatedCartItems[existingItemIndex].quantity += 1;
+                          setCartedItems(updatedCartItems);
+                        } else {
+                          addItemToLocalStorage(pro);
+                          updatedCartItems.push({ ...pro, quantity: 1 });
+                          setCartedItems(updatedCartItems);
+                        }
                       }}
                     >
                       <img src="/icon.png" alt="icon" className="w-4 h-4" />

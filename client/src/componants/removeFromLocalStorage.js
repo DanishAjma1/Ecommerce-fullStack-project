@@ -4,7 +4,6 @@ export function removeItemFromLocalStorage(pro) {
     const filteredItems = cartItems.filter((item) => {
       return item._id !== pro._id;
     });
-    console.log(filteredItems);
     localStorage.setItem("cartItems", JSON.stringify(filteredItems));
   }
 }
