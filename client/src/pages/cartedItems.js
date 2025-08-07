@@ -1,63 +1,143 @@
-import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { addItemToLocalStorage } from "../componants/addToLocalStorage.js";
+import { removeItemFromLocalStorage } from "../componants/removeFromLocalStorage.js";
+import { getItemsFromLocalStorage } from "../componants/getItemFromLocalStorage.js";
 
 export default function CartedItems() {
+  const [cartedItems, setCartedItems] = useState([]);
+  const URL = "http://localhost:5000";
+  const [products, setProducts] = useState([]);
+  const [subTotal, setSubTotal] = useState(0);
+  const [dicount, setDiscount] = useState(0);
+  const [total, setTotal] = useState(0);
+  const tax = 14.21;
+
+  const calculateTotal = () => {
+    const newSubTotal = cartedItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    setSubTotal(newSubTotal);
+    const newDiscount = newSubTotal * 0.25;
+    setDiscount(newDiscount);
+    setTotal(newSubTotal - newDiscount + tax);
+  };
+
+  useEffect(() => {
+    setCartedItems(getItemsFromLocalStorage);
+    axios
+      .get(`${URL}/products/getProducts`)
+      .then((response) => {
+        setProducts(response.data || []);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      });
+  }, []);
+
+  useEffect(() => {
+    calculateTotal();
+  });
   return (
     <div>
       <div className="flex justify-center bg-slate-50">
         <div className="w-10/12">
           <div className="flex lg:flex-row flex-col">
             <div className="flex flex-col w-full lg:w-9/12">
-            {/* CartedItems */}
+              {/* CartedItems */}
               <div className="bg-white border-2 rounded-lg shadow-md">
-                {[...Array(4)].map((_, index) => (
-                  <div className="flex m-5 md:flex-row flex-col border-b-2" key={index}>
-                    <div className="sm:p-4 p-1 md:w-2/3 flex flex-row gap-2 items-start">
-                      <div>
-                        <img
-                          src="/shirt.jpg"
-                          alt="shirt"
-                          className="min-w-24 object-contain h-24 mt-2 rounded-lg"
-                        />
+                {cartedItems.length !== 0 ? (
+                  cartedItems.map((item, index) => (
+                    <div
+                      className="flex m-5 md:flex-row flex-col border-b-2"
+                      key={index}
+                    >
+                      <div className="sm:p-4 p-1 md:w-2/3 flex flex-row gap-2 items-start">
+                        <div>
+                          <img
+                            src={item.imageUri}
+                            alt="shirt"
+                            className="w-24 object-contain h-24 mt-2 rounded-lg"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <h1 className="sm:text-lg text-md font-semibold">
+                            {item.title}
+                          </h1>
+                          <div className="sm:text-md text-xs text-gray-400">
+                            <p>
+                              Size: {item.size || "Unknown"}, Color:{" "}
+                              {item.color || "Unknown"}, Material:{" "}
+                              {item.material || "Unknown"}
+                            </p>
+                            <p>Seller: {item.market || "Unknown"}</p>
+                          </div>
+                          <div className="flex flex-row items-center text-sm font-medium">
+                            <button
+                              className="text-red-400 px-2 py-1 border-2 rounded-lg"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                removeItemFromLocalStorage(item);
+                                setCartedItems(
+                                  cartedItems.filter((cartItem) => {
+                                    return cartItem._id !== item._id;
+                                  })
+                                );
+                              }}
+                            >
+                              Remove
+                            </button>
+                            <button className="text-blue-400 px-2 py-1 border-2 rounded-lg ml-2" onClick={(e)=>{
+                              e.preventDefault();
+                              alert("The item is already saved in carted items list,don't worry..")
+                            }}>
+                              Save for later
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <h1 className="sm:text-lg text-md font-semibold">
-                          T-shirt for men multiple colors,men and womens
-                        </h1>
-                        <div className="sm:text-md text-xs text-gray-400">
-                          <p>Size: M, Color: Blue, Material: Polyester</p>
-                          <p>Seller: Artel Market</p>
-                        </div>
-                        <div className="flex flex-row items-center text-sm font-medium">
-                          <button className="text-red-400 px-2 py-1 border-2 rounded-lg">
-                            Remove
-                          </button>
-                          <button className="text-blue-400 px-2 py-1 border-2 rounded-lg ml-2">
-                            Save for later
-                          </button>
-                        </div>
+                      <div className="flex sm:w-1/3 sm:flex-col flex-row p-5 gap-1 sm:justify-center justify-between items-center sm:items-end">
+                        <p className="sm:text-lg sm:-order-none order-1 font-semibold text-gray-600">
+                          Price:{" "}
+                          <span className="text-black">
+                            ${item.price * item.quantity}
+                          </span>
+                        </p>
+
+                        <p className="text-gray-500">
+                          Quantity:{" "}
+                          <span>
+                            <select
+                              name="quantity"
+                              value={item.quantity}
+                              className="border-2 border-gray-300 border-y-0 bg-transparent rounded-lg px-2 py-1 sm:mt-2"
+                              onChange={(e) => {
+                                e.preventDefault();
+                                const updateQuantity = [...cartedItems];
+                                updateQuantity[index].quantity = e.target.value;
+                                setCartedItems(updateQuantity);
+                              }}
+                            >
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>
+                          </span>
+                        </p>
                       </div>
                     </div>
-
-                    <div className="flex sm:w-1/3 sm:flex-col flex-row p-5 gap-1 sm:justify-center justify-between items-center sm:items-end">
-                      <p className="sm:text-lg sm:-order-none order-1 font-semibold text-gray-600">
-                        Price: <span className="text-black">$20.00</span>
-                      </p>
-
-                      <p className="text-gray-500">
-                        Quantity:{" "}
-                        <span>
-                          <select className="border-2 border-gray-300 border-y-0 bg-transparent rounded-lg px-2 py-1 sm:mt-2">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                          </select>
-                        </span>
-                      </p>
-                    </div>
+                  ))
+                ) : (
+                  <div className="p-5 flex justify-center">
+                    <p className="text-lg text-gray-600 font-medium">
+                      Your cart is empty
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
               {/* faclities */}
               <div className="sm:flex hidden sm:flex-row flex-col px-4 py-6 justify-between gap-3 sm:items-center items-start">
@@ -110,20 +190,20 @@ export default function CartedItems() {
                   <div className="border-b-2 pb-4">
                     <div className="flex flex-row w-full justify-between">
                       <p>Subtotal:</p>
-                      <p>$2312.23</p>
+                      <p>${subTotal}</p>
                     </div>
                     <div className="flex flex-row justify-between">
                       <p>Discount:</p>
-                      <p className="text-red-500">-$60.23</p>
+                      <p className="text-red-500">-${dicount}</p>
                     </div>
                     <div className="flex flex-row justify-between">
                       <p>Tax:</p>
-                      <p className="text-green-500">+$14.21</p>
+                      <p className="text-green-500">+${tax}</p>
                     </div>
                   </div>
                   <div className="flex flex-row justify-between mt-4">
                     <p>Total:</p>
-                    <p className="xl:text-xl text-lg font-bold">$3242.23</p>
+                    <p className="xl:text-xl text-lg font-bold">${total}</p>
                   </div>
                   <div className="py-4 w-full justify-center flex">
                     <button className="text-white rounded-md px-4 xl:py-4 py-2 max-w-40 bg-green-600 w-full">
@@ -147,27 +227,55 @@ export default function CartedItems() {
               Similar products
             </h4>
             <div className="flex sm:flex-row flex-col gap-2 sm:overflow-y-scroll h-auto">
-              {[...Array(8)].map((_, index) => (
+              {products.map((pro, index) => (
                 <div
                   className="flex sm:flex-col flex-row w-full justify-center sm:items-center items-start gap-2 border-2 p-4 sm:w-fit"
                   key={index}
                 >
                   <img
-                    src="/shirt.jpg"
-                    className="max-w-44 max-h-44 sm:min-w-40 sm:min-h-40 min-w-20 min-h-20 object-contain"
+                    src={pro.imageUri}
+                    className="w-44 h-44 sm:min-w-40 min-w-20 min-h-20 object-contain"
                     alt="You may like"
                   />
                   <div className="flex flex-col gap-1 flex-wrap text-wrap">
                     <span className="text-gray-500 font-bold text-lg">
                       {" "}
-                      $29.99
+                      ${pro.price}
                     </span>
-                    <p>Casual Shirt sets Elegant Formal</p>
-                    <button className="bg-transparent text-blue-500 sm:text-lg text-sm border-2 w-fit sm:p-2 px-2 py-1 flex items-center gap-2 rounded-md">
+                    <p>{pro.title}</p>
+                    {/* Button to shop products */}
+                    <button
+                      className="bg-transparent text-blue-500 text-sm border-2 w-fit px-2 py-1 flex items-center gap-2 rounded-md"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const updatedCartItems = [...cartedItems];
+                        let existingItemIndex = cartedItems.findIndex((item) => {
+                          return item._id === pro._id;
+                        });
+                        if (existingItemIndex !== -1) {
+                          updatedCartItems[existingItemIndex].quantity += 1;
+                          setCartedItems(updatedCartItems);
+                        } else {
+                          addItemToLocalStorage(pro);
+                          updatedCartItems.push({ ...pro, quantity: 1 });
+                          setCartedItems(updatedCartItems);
+                        }
+                      }}
+                    >
                       <img src="/icon.png" alt="icon" className="w-4 h-4" />
                       Move to cart
                     </button>
-                    <button className="bg-transparent text-red-500 border-2 sm:p-2 px-2 py-1 flex w-fit items-center gap-2 rounded-md">
+                    <button
+                      className="bg-transparent text-red-500 text-sm border-2 px-2 py-1 flex w-fit items-center gap-2 rounded-md"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setProducts(
+                          products.filter((prod) => {
+                            return prod._id !== pro._id;
+                          })
+                        );
+                      }}
+                    >
                       <img src="/icon.png" alt="icon" className="w-4 h-4" />
                       Remove
                     </button>

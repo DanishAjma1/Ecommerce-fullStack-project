@@ -1,19 +1,23 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { addItemToLocalStorage } from "../componants/addToLocalStorage.js";
 
-export default function SelectedItem() {
+export default function SelectedItem({querySearch}) {
   const location = useLocation();
   const navigate = useNavigate();
   const { product } = location.state;
   const URL = "http://localhost:5000";
   const [products, setProducts] = useState([]);
+      const [allProducts, setAllProducts] = useState([]);
+  
 
   useEffect(() => {
     axios
       .get(`${URL}/products/getProducts`)
       .then((response) => {
         setProducts(response.data || []);
+        setAllProducts(response.data || []);
       })
       .catch((error) => {
         console.error("Failed to fetch products:", error);
@@ -21,6 +25,16 @@ export default function SelectedItem() {
       });
   }, []);
 
+  useEffect(() => {
+     if (!querySearch || allProducts.length === 0) {
+      setProducts(allProducts)
+      return;
+     };
+      const filteredProducts = allProducts.filter((pro) =>
+        pro.title.toLowerCase().includes(querySearch.toLowerCase())
+      );
+      setProducts(filteredProducts);
+    }, [querySearch, allProducts]);
   const HandleResponsive = () => {
     return (
       <div className="flex flex-col w-full">
@@ -189,13 +203,13 @@ export default function SelectedItem() {
                     </div>
                   </div>
                 </div>
-                {/* Cart button */}
+                {/* Add to cart and Buy now button */}
                 <div className="flex flex-row md:justify-evenly md:gap-0 gap-5  items-center">
                   <button
                     className="bg-blue-500 md:w-40 flex justify-center text-white px-4 py-2 rounded-md my-5"
                     onClick={(e) => {
                       e.preventDefault();
-                      localStorage.setItem(product);
+                      addItemToLocalStorage(product);
                     }}
                   >
                     Add to Cart
@@ -205,7 +219,7 @@ export default function SelectedItem() {
                     className="bg-green-500 md:w-40 flex justify-center text-white px-4 py-2 rounded-md my-5"
                     onClick={(e) => {
                       e.preventDefault();
-                      localStorage.setItem(product);
+                      addItemToLocalStorage(product);
                       navigate("/cartitems");
                     }}
                   >
@@ -274,7 +288,7 @@ export default function SelectedItem() {
                 </div>
               </div>
             </div>
-            {/* Supplier deiv */}
+            {/* Supplier div */}
             <HandleSupplierDiv />
           </div>
           {/* Description */}
@@ -346,9 +360,15 @@ export default function SelectedItem() {
               Similar products
             </h4>
             <div className="flex flex-row gap-2 overflow-y-scroll h-auto">
-              {products.map((pro, index) => (
+              {(querySearch === ""? allProducts: products).map((pro, index) => (
                 <div
                   className="flex flex-col justify-center items-center hover:cursor-pointer gap-2 border-2 p-4 w-fit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`/products/${pro._id}`, {
+                      state: { product: pro },
+                    });
+                  }}
                   key={index}
                 >
                   <img

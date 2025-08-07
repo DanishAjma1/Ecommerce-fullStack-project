@@ -3,8 +3,9 @@ import Breadcrumbs from "./breadcrumbs.js";
 import CategoriesNav from "./categoriesNav.js";
 import BrandIdentification from "./brandIdentification.js";
 import ShowmenuPopup from "./menuPopUp.js";
+import { useNavigate } from "react-router-dom";
 
-export default function Header() {
+export default function Header({ querySearch, setQuerySearch }) {
   const NavItems = ({ value }) => {
     return <h2 className="text-[16px] font-semibold">{value}</h2>;
   };
@@ -52,19 +53,20 @@ export default function Header() {
     { name: "South African Rand", code: "ZAR", symbol: "R" },
   ];
   const [isOpen, setIsOpen] = useState(false);
-  
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="flex md:flex-row flex-col items-center border border-b-2">
         <div className="lg:w-1/4 md:w-2/5 w-full p-5 flex flex-row items-center md:justify-center">
           <div
-            className="bg-white py-3 px-2 rounded-lg shadow-lg mr-4 lg:hidden block"
+            className="bg-white py-3 px-2 rounded-lg shadow-lg mr-4"
             onClick={(e) => {
               e.preventDefault();
               setIsOpen(!isOpen);
             }}
           >
-            <img src="/menuIcon.png" alt="icon" className="min-w-6 w-6" />
+            <img src="/menuIcon.png" alt="icon" className="min-w-6 w-6 lg:hidden block" />
             {isOpen && <ShowmenuPopup />}
           </div>
           <BrandIdentification />
@@ -75,7 +77,11 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="Search"
+                value={querySearch}
                 className=" w-full md:py-1 md:text-lg text-sm md:px-3 px-1"
+                onChange={(e) => {
+                  setQuerySearch(e.target.value);
+                }}
               />
             </div>
             <span className="flex-row flex border border-l-2 border-y-0 border-r-0 border-indigo-950">
@@ -100,17 +106,41 @@ export default function Header() {
         </div>
         <div className="w-1/4 lg:flex hidden justify-center items-center">
           <div className="w-2/3 p-3 rounded-lg flex flex-row justify-evenly">
-            <img src="/icon.png" alt="icon" className="w-8" />
-            <img src="/icon.png" alt="icon" className="w-8" />
-            <img src="/icon.png" alt="icon" className="w-8" />
+            <div className="flex flex-col justify-center items-center hover:cursor-pointer hover:text-blue-600 hover:scale-110 transition">
+              <img src="/profile.png" alt="icon" className="w-6" />
+              <p className="text-xs">profile</p>
+            </div>
+            <div className="flex flex-col justify-center items-center hover:text-blue-600 hover:cursor-pointer hover:scale-110 transition">
+              <img src="/messages.png" alt="icon" className="w-6" />
+              <p className="text-xs">messages</p>
+            </div>
+            <div
+              className="flex flex-col justify-center items-center hover:cursor-pointer hover:text-blue-600 hover:scale-110 transition"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/cartitems");
+              }}
+            >
+              <img src="/cart.png" alt="icon" className="w-6" />
+              <p className="text-xs">my cart</p>
+            </div>
           </div>
         </div>
       </div>
       <div className="p-5 border flex justify-center border-b-2">
         <div className="flex w-10/12">
           <div className="lg:w-4/6 w-2/6 justify-start md:flex hidden flex-row">
-            <span className="flex lg:w-3/12 flex-row w-full items-center mr-5">
-              <img src="/icon.png" alt="icon" className="w-8 mr-2" />
+            <span
+              className="flex lg:w-3/12 flex-row w-full items-center mr-5">
+              <img
+                src="/menuIcon.png"
+                alt="icon"
+                className="min-w-8 w-8 mr-2 shadow-md p-1 rounded-sm"
+                onClick={(e) => {
+                e.preventDefault();
+                setIsOpen(!isOpen);
+              }}
+            />
               <NavItems value={"All Cetagory"} />
             </span>
             <div className="lg:w-5/6 lg:flex hidden gap-2 flex-row xl:justify-around justify-between items-center ">
