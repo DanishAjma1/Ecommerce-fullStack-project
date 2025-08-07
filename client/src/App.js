@@ -1,12 +1,14 @@
 import './App.css';
+import AllRoutes from './componants/allRoutes.js';
+import Footer from './componants/footer.js';
 import Header from './componants/header.js';
-import Home from './pages/home.js';
 
 function App() {
   return (
     <div className="App">
       <Header />
-      <Home />
+      <AllRoutes />
+      <Footer />
     </div>
   );
 }
