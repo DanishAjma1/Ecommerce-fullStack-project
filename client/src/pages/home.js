@@ -50,7 +50,6 @@ const countries = [
 ];
 
 export default function Home({querySearch}) {
-  console.log(querySearch)
   const URL = "http://localhost:5000";
   const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
@@ -344,6 +343,7 @@ export default function Home({querySearch}) {
               <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
                 {allProducts.slice(0, products.length - 1).map((pro, idx) => (
                   <div
+                  key={idx}
                     className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex"
                     onClick={(e) => {
                       e.preventDefault();
@@ -401,6 +401,7 @@ export default function Home({querySearch}) {
               <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
                 {allProducts.slice(0, products.length - 1).map((pro, idx) => (
                   <div
+                  key={idx}
                     className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex"
                     onClick={(e) => {
                       e.preventDefault();
@@ -517,8 +518,8 @@ export default function Home({querySearch}) {
           <div>
             <div className="flex my-5 justify-center">
               <div className="grid grid-flow-row xl:grid-cols-5 md:grid-cols-4 bg-white rounded-md p-4 sm:grid-cols-3 grid-cols-2 gap-4 my-5 gap-x-4">
-                {countries.map((con) => (
-                  <SupplierRegion con={con} />
+                {countries.map((con,idx) => (
+                  <SupplierRegion key={idx} con={con} />
                 ))}
               </div>
             </div>

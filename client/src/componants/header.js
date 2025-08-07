@@ -157,13 +157,14 @@ export default function Header({ querySearch, setQuerySearch }) {
                 <p className="sm:text-lg text-sm font-semibold">English,</p>
                 <select
                   name="Shipping"
-                  className="bg-transparent sm:text-lg text-sm pl-1"
+                  className="bg-transparent sm:text-lg text-sm pl-1 border-none"
                 >
-                  <option selected hidden value={"#"}>
+                  <option hidden value={"#"}>
                     Ship-to
                   </option>
-                  {countries.map((con) => (
+                  {countries.map((con,idx) => (
                     <option
+                    key={idx}
                       value={con.value}
                     >{`${con.name} ${con.flag}`}</option>
                   ))}
@@ -174,11 +175,11 @@ export default function Header({ querySearch, setQuerySearch }) {
                   name="Currency"
                   className="bg-transparent sm:p-2 sm:text-lg text-sm "
                 >
-                  <option selected hidden value={"#"}>
+                  <option hidden value={"#"}>
                     Currency
                   </option>
-                  {currencies.map((cur) => (
-                    <option value={cur.name}>
+                  {currencies.map((cur,idx) => (
+                    <option key={idx} value={cur.name}>
                       {cur.code + " - " + cur.symbol}
                     </option>
                   ))}

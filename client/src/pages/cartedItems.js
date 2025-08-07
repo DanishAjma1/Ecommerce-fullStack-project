@@ -25,6 +25,8 @@ export default function CartedItems() {
   };
 
   useEffect(() => {
+    debugger;
+    console.log("this is client debugger..");
     setCartedItems(getItemsFromLocalStorage);
     axios
       .get(`${URL}/products/getProducts`)
