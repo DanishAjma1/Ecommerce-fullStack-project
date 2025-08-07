@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import BrandIdentification from "./brandIdentification.js";
 
 export default function Footer() {
 const countries = [
@@ -46,22 +47,19 @@ const countries = [
           </div>
         </div>
         <div className="flex justify-center py-8">
-          <div className="w-10/12 flex flex-row">
-            <div className="w-2/5 p-5">
+          <div className="w-10/12 flex lg:flex-row flex-col">
+            <div className="lg:w-2/6 p-5 w-full">
               <div className="flex items-center">
-                <div className=" p-3 rounded-lg shadow-md shadow-indigo-950">
-                  <img src="/icon.png" alt="icon" className="w-8" />
-                </div>
-                <h1 className="font-extrabold text-2xl pl-4">The Brand</h1>
+                <BrandIdentification />
               </div>
               <p className="mt-4">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               </p>
             </div>
-            <div className="w-full flex flex-row flex-wrap">
-              <div className="w-1/5 items-center justify-center flex">
-                <div className=" text-start flex flex-col">
-                  <h5 className="font-medium self-start">About</h5>
+            <div className="grid grid-flow-row bg-white rounded-md p-2 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 my-5">
+              <div className="items-center w-full sm:border-r-2 border-t-2 sm:border-t-0 sm:pt-0 pt-3 justify-center flex">
+                <div className=" sm:text-start text-center flex flex-col">
+                  <h5 className="font-medium">About</h5>
                   <ul>
                     <li>
                       <Link
@@ -100,9 +98,9 @@ const countries = [
                   </ul>
                 </div>
               </div>
-              <div className="w-1/5 items-center justify-center flex">
-                <div className=" text-start flex flex-col">
-                  <h5 className="font-medium self-start">About</h5>
+              <div className="items-center justify-center sm:border-r-2 border-t-2 sm:border-t-0 flex sm:pt-0 pt-3">
+                <div className=" sm:text-start text-center flex flex-col">
+                  <h5 className="font-medium">About</h5>
                   <ul>
                     <li>
                       <Link
@@ -141,9 +139,9 @@ const countries = [
                   </ul>
                 </div>
               </div>
-              <div className="w-1/5 items-center justify-center flex">
-                <div className=" text-start flex flex-col">
-                  <h5 className="font-medium self-start">Information</h5>
+              <div className="items-center justify-center sm:border-r-2 border-t-2 sm:border-t-0 flex sm:pt-0 pt-3">
+                <div className="sm:text-start text-center flex flex-col">
+                  <h5 className="font-medium">Information</h5>
                   <ul>
                     <li>
                       <Link
@@ -183,9 +181,9 @@ const countries = [
                 </div>
               </div>
 
-              <div className="w-1/5 items-center justify-center flex">
-                <div className=" text-start flex flex-col">
-                  <h5 className="font-medium self-start">For users</h5>
+              <div className="items-center justify-center sm:border-r-2 border-t-2 sm:border-t-0 flex sm:pt-0 pt-3">
+                <div className=" sm:text-start text-center flex flex-col">
+                  <h5 className="font-medium">For users</h5>
                   <ul>
                     <li>
                       <Link
@@ -225,9 +223,9 @@ const countries = [
                 </div>
               </div>
 
-              <div className="w-1/5 items-center justify-center flex">
-                <div className=" text-start flex flex-col gap-4">
-                  <h5 className="font-medium self-start">Get App</h5>
+              <div className="items-center justify-center flex sm:pt-0 pt-3 border-t-2 sm:border-t-0">
+                <div className="sm:text-start text-center flex flex-col gap-4">
+                  <h5 className="font-medium">Get App</h5>
                   <div className="flex px-2 py-1 flex-row bg-black text-white items-center gap-3 rounded-lg">
                     <div>
                       <img

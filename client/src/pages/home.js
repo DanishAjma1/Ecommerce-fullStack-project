@@ -1,4 +1,6 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const countries = [
   { name: "USA", flag: "🇺🇸", desc: "Leading global economy and innovation" },
@@ -47,20 +49,26 @@ const countries = [
   { name: "UAE", flag: "🇦🇪", desc: "Modern cities and desert luxury" },
 ];
 
-const images = [
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-  "watch.jpg",
-];
 export default function Home() {
+  const URL = "http://localhost:5000";
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/products/getProducts`)
+      .then((response) => {
+        setProducts(response.data || []);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      });
+  }, []);
+
   const ExtraServices = () => {
     return (
-      <div className="w-1/5 rounded-lg bg-white overflow-hidden shadow hover:shadow-lg transition">
+      <div className="min-w-40 max-w-60 w-full md:w-auto rounded-lg justify-self-center bg-white overflow-hidden shadow hover:shadow-lg transition">
         <div className="relative h-36">
           <img
             src="/shipping.jpg"
@@ -88,25 +96,36 @@ export default function Home() {
           <p>{con.flag}</p>
           <h1 className="text-lg font-bold">{con.name}</h1>
         </div>
-        <p className="text-sm">{con.desc}</p>
+        <p className="lg:block hidden text-sm">{con.desc}</p>
       </div>
     );
   };
-  const GridPicsDesign = () => {
+  const GridPics = () => {
     return (
-      <div className="flex flex-col text-black justify-center shadow-md items-center p-5 rounded-lg bg-white">
-        <img src="/shirt.jpg" alt="shirt" className="h-52" />
-        <div className="mt-5">
-          <h1 className="text-lg font-bold">$10.30</h1>
-          <p className="text-gray-400">T-shirt with mutiple colors,for men</p>
-        </div>
-      </div>
+      <>
+        {products.map((pro, idx) => (
+          <div
+            key={idx}
+            className="flex flex-col text-black justify-center shadow-md items-center p-5 rounded-lg bg-white"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(`/products/${pro._id}`,{state:{product: pro}});
+            }}
+          >
+            <img src={pro.imageUri} alt="shirt" className="h-52" />
+            <div className="mt-5 flex text-center xl:text-start flex-col">
+              <h1 className="text-lg font-bold">${pro.price}</h1>
+              <p className="text-gray-400">{pro.description}</p>
+            </div>
+          </div>
+        ))}
+      </>
     );
   };
   const TimeDiv = ({ heading, subHeading }) => {
     return (
       <div>
-        <div className="text-[15px] font-extrabold w-12 px-3 py-1 rounded-md flex text-white bg-black opacity-75 justify-center items-center">
+        <div className="md:text-[15px] text-sm sm:font-extrabold md:w-12 w-10 px-3 py-1 rounded-md flex text-white bg-black opacity-75 justify-center items-center">
           <p className="flex flex-col">
             {heading}
             <span className="text-sm font-light">{subHeading}</span>
@@ -116,10 +135,14 @@ export default function Home() {
       </div>
     );
   };
-  const SaleItemDiv = ({ heading, subHeading }) => {
+  const SaleItemDiv = ({ heading, subHeading, imageUri }) => {
     return (
-      <div className="w-1/5 flex flex-col justify-center items-center p-5 border-r-2">
-        <img src="/watch.jpg" alt="watch" className="rounded-md" />
+      <div className="min-w-1/5 flex flex-col justify-center items-center p-5 border-r-2">
+        <img
+          src={imageUri}
+          alt="watch"
+          className="rounded-md min-w-24 max-h-32"
+        />
         <p className="text-lg my-3">{heading}</p>
         <p className="text-sm py-1 px-3 text-red-800 rounded-3xl bg-red-200">
           {subHeading}
@@ -130,9 +153,9 @@ export default function Home() {
   return (
     <div>
       <div className="flex flex-col justify-center items-center bg-gray-50">
-        <div className="px-1 py-5 gap-3 md:w-10/12 md:flex hidden bg-gray-100 shadow-lg my-5 rounded-lg h-[60vh]">
+        <div className="md:px-1 md:py-5 gap-3 w-10/12 flex bg-gray-100 shadow-lg my-5 rounded-lg md:h-[60vh] sm:h-[40vh] h-[25vh]">
           {/* Cetagory List */}
-          <div className="lg:w-3/12 md:w-4/12 justify-start flex ">
+          <div className="lg:w-3/12 md:w-4/12 justify-start lg:flex hidden ">
             <div className="w-full ml-3 overflow-y-auto text-wrap overflow-scroll  ">
               <ul className="ml-3 text-lg p-3 items-center hover:cursor-pointer">
                 <li className="p-2 active:bg-slate-400 hover:cursor-pointer not-active:bg-white">
@@ -166,22 +189,22 @@ export default function Home() {
             </div>
           </div>
           {/* shopingDashboardPic & userInfo */}
-          <div className="lg:w-9/12 md:w-4/6 flex gap-3 flex-row">
+          <div className="lg:w-9/12 w-full flex lg:gap-3 flex-row">
             {/* shopingDashboardPic */}
-            <div className="lg:w-9/12 md:w-full relative">
-              <div className="w-full flex bg-center">
+            <div className="lg:w-9/12 w-full relative">
+              <div className="w-full flex sm:object-contain object-cover">
                 <img
                   src="/shopingDashboardPic.jpg"
                   alt="womenShopping"
-                  className="absolute h-[55vh] w-full rounded-md"
+                  className="absolute md:h-[55vh] sm:h-[40vh] h-[25vh] w-full rounded-md"
                 />
               </div>
               <div className="relative ml-12 flex mt-10 flex-col w-2/4">
-                <h2 className="text-2xl">Latest trending</h2>
-                <h1 className="text-3xl text-white font-bold">
+                <h2 className="sm:text-2xl">Latest trending</h2>
+                <h1 className="sm:text-3xl text-lg text-white font-bold">
                   Electronic items
                 </h1>
-                <button className="text-lg bg-white mt-5 py-2 w-40 ">
+                <button className="sm:text-lg text-xs  bg-white sm:mt-5 sm:py-2 py-1 w-fit px-4 ">
                   Learn more
                 </button>
               </div>
@@ -234,17 +257,19 @@ export default function Home() {
       </div>
       <div className="flex justify-center bg-gray-50">
         <div className="w-10/12 flex flex-col">
-          {/* second div line */}
+          {/* Deals and offers line */}
           <div className="w-full my-5">
-            <div className="flex flex-row bg-gray-100 overflow-hidden shadow-md rounded-md">
-              <div className="w-1/5  border-r-2">
-                <div className="p-2">
+            <div className="flex xl:flex-row flex-col bg-gray-100 overflow-hidden shadow-md rounded-md">
+              <div className="xl:w-1/5 flex justify-center  items-center border-r-2">
+                <div className="p-2 flex xl:w-full md:w-3/4 w-full xl:flex-col flex-row justify-between">
                   <div className="pl-3 pt-5">
-                    <h1 className="text-xl font-extrabold">Deals and offers</h1>
-                    <p>Hygiene equipments</p>
+                    <h1 className="sm:text-xl text-md font-extrabold">
+                      Deals and offers
+                    </h1>
+                    <p className="sm:text-lg text-sm">Hygiene equipments</p>
                   </div>
                   {/* time of offers */}
-                  <div className="flex flex-row justify-evenly mt-5">
+                  <div className="flex flex-row xl:justify-evenly gap-1 mt-5">
                     <TimeDiv heading={"04"} subHeading={"Days"} />
                     <TimeDiv heading={"13"} subHeading={"hour"} />
                     <TimeDiv heading={"34"} subHeading={"min"} />
@@ -252,103 +277,177 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="w-4/5 flex flex-row">
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-25%"} />
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-23%"} />
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-34%"} />
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-24%"} />
-                <SaleItemDiv heading={"Smart watches"} subHeading={"-50%"} />
+              <div className="xl:w-4/5 w-full overflow-y-scroll flex flex-row">
+                {products.map((pro, index) => {
+                  return (
+                    <SaleItemDiv
+                      key={index}
+                      heading={pro.title}
+                      imageUri={pro.imageUri}
+                      subHeading={"-50%"}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
           {/* gridpics two times */}
-          <div className="my-5">
-          <div className="w-full grid grid-flow-row shadow-md overflow-hidden rounded-md">
-            <div className="grid grid-cols-6 grid-rows-2">
-              <div className="row-span-2 col-span-2 w-full">
-                <img src="/watch.jpg" alt="watch1" />
+          <div className="my-5 w-full shadow-md overflow-hidden rounded-md">
+            <div className="grid grid-cols-1 lg:grid-cols-7">
+              {/* Large screen left image with text */}
+              <div className="hidden lg:block col-span-2 relative">
+                <img
+                  src="/sofa.jpg"
+                  alt="Featured Watch"
+                  className="w-full h-full object-cover rounded-l-md"
+                />
+                <div className="absolute top-10 gap-2 flex flex-col items-start w-2/3 left-6 text-white z-10">
+                  <h2 className="text-2xl font-bold">Home and outdoor</h2>
+                  <button className="text-lg bg-white px-3 py-2 opacity-80 rounded-md text-black">
+                    Best Seller
+                  </button>
+                </div>
               </div>
-              {images.map((image) => (
-                <img src="/watch.jpg" alt="watch8" className="w-full h-auto" />
-              ))}
+
+              {/* Text for small screens */}
+              <div className="lg:hidden px-4 py-2">
+                <h2 className="text-xl font-bold">Home and outdoor</h2>
+              </div>
+
+              {/* Grid of product images */}
+              <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
+                {products.slice(0, products.length - 1).map((pro, idx) => (
+                  <div className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex">
+                    <div className="relative flex flex-col lg:gap-0 gap-3 lg:flex-row lg:justify-between lg:w-full lg:p-2 items-start">
+                      <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
+                        <h6 className="xl:text-md text-sm">{pro.title}</h6>
+                        <p className="text-xs md:text-sm text-gray-600">
+                          From USD 19
+                        </p>
+                      </div>
+                      <img
+                        key={idx}
+                        src={pro.imageUri}
+                        alt={`watch${idx}`}
+                        className="min-w-32 min-h-28 order-1 lg:order-none lg:min-w-8 lg:min-h-8 relative lg:w-1/2 h-20 object-contain"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          </div>
-          <div className="my-5">
-          <div className="w-full grid grid-flow-row shadow-md overflow-hidden rounded-md">
-            <div className="grid grid-cols-6 grid-rows-2">
-              <div className="row-span-2 col-span-2 w-full">
-                <img src="/watch.jpg" alt="watch1" />
+          <div className="my-5 w-full shadow-md overflow-hidden rounded-md">
+            <div className="grid grid-cols-1 lg:grid-cols-7">
+              {/* Large screen left image with text */}
+              <div className="hidden lg:block col-span-2 relative">
+                <img
+                  src="/professionalCamer.jpg"
+                  alt="Featured Watch"
+                  className="w-full h-full object-cover rounded-l-md"
+                />
+                <div className="absolute top-6 w-2/3 left-6 text-white z-10 gap-2 flex flex-col items-start">
+                  <h2 className="text-2xl font-bold">
+                    Consumer electronic and gadgets
+                  </h2>
+                  <button className="text-lg bg-white px-3 py-2 opacity-90 rounded-md text-black">
+                    Source now
+                  </button>
+                </div>
               </div>
-              {images.map((image) => (
-                <img src="/watch.jpg" alt="watch8" className="w-full h-auto" />
-              ))}
+
+              {/* Text for small screens */}
+              <div className="lg:hidden px-4 py-2">
+                <h2 className="text-xl font-bold">
+                  Consumer electronic and gadgets
+                </h2>
+              </div>
+
+              {/* Grid of product images */}
+              <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
+                {products.slice(0, products.length - 1).map((pro, idx) => (
+                  <div className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex">
+                    <div className="relative flex flex-col lg:gap-0 gap-3 lg:flex-row lg:justify-between lg:w-full lg:p-2 items-start">
+                      <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
+                        <h6 className="xl:text-md text-sm">{pro.title}</h6>
+                        <p className="text-xs md:text-sm text-gray-600">
+                          From USD 19
+                        </p>
+                      </div>
+                      <img
+                        key={idx}
+                        src={pro.imageUri}
+                        alt={`watch${idx}`}
+                        className="min-w-32 min-h-28 order-1 lg:order-none lg:min-w-8 lg:min-h-8 relative lg:w-1/2 h-20 object-contain"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          </div>
+
           {/* supplier inquiry */}
           <div className="relative my-5 shadow-md overflow-hidden rounded-md">
             <div className="w-full flex bg-center">
               <img
                 src="/shopingDashboardPic.jpg"
                 alt="womenShopping"
-                className="absolute h-[55vh] w-full"
+                className="absolute h-[55vh] w-full bg-blend-overlay inset-1 object-cover bg-center"
               />
             </div>
-            <div className="bg-blue-700 opacity-85  relative h-[55vh] w-full flex flex-row text-white">
-              <div className="w-2/5 flex-col flex text-wrap ml-10 mt-10 p-3">
-                <h1 className="text-4xl font-bold">
+            <div className="bg-blue-700 opacity-85 relative h-full w-full p-3 flex flex-row text-white">
+              <div className="w-2/5 flex-col md:flex hidden text-wrap ml-10 mt-10 p-3">
+                <h1 className="lg:text-4xl text-2xl font-bold">
                   An easy way to send requests to all suppliers
                 </h1>
-                <p className="text-lg">
+                <p className="lg:text-lg text-md">
                   {" "}
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                   do eiusmod tempor incididunt.
                 </p>
               </div>
 
-              <div className="w-3/5  justify-center flex items-center">
-                <div className="w-2/3 text-black justify-center flex">
-                  <div className="">
-                    <form className="gap-5 flex flex-col p-8 bg-slate-100 rounded-lg">
-                      <h2 className="text-2xl">Send qoute to suppliers</h2>
+              <div className="md:w-3/5 w-full justify-center flex items-center">
+                <div className="md:w-2/3 justify-center flex items-center">
+                  <form className="lg:gap-5 gap-2 flex xl:text-lg text-black lg:text-md text-sm flex-col lg:p-8 p-6 bg-white rounded-lg">
+                    <h2 className="text-2xl">Send qoute to suppliers</h2>
+                    <input
+                      type="text"
+                      placeholder="What item you need?"
+                      className="p-2 w-full rounded-lg border-2"
+                    />
+
+                    <textarea
+                      rows={2}
+                      placeholder="What item you need?"
+                      className="p-2 w-full rounded-lg border-2"
+                    />
+                    <div className="flex lg:flex-row flex-col lg:gap-4 gap-2 text-black">
                       <input
                         type="text"
                         placeholder="What item you need?"
-                        className="p-2 text-lg w-full rounded-lg"
+                        className="p-2 w-full rounded-lg border-2"
                       />
-
-                      <textarea
-                        rows={2}
-                        placeholder="What item you need?"
-                        className="p-2 text-lg w-full rounded-lg"
-                      />
-                      <div className="flex flex-row gap-4">
-                        <input
-                          type="text"
-                          placeholder="What item you need?"
-                          className="p-2 text-lg w-full rounded-lg"
-                        />
-                        <select
-                          name="quantity"
-                          className="p-2 text-lg rounded-lg"
-                        >
-                          <option>Select quantity</option>
-                          <option value={1}>1</option>
-                          <option value={1}>2</option>
-                          <option value={1}>3</option>
-                          <option value={1}>4</option>
-                          <option value={1}>5</option>
-                        </select>
-                      </div>
-                      <button
-                        type="submit"
-                        className="bg-blue-700 w-fit text-white px-3 py-2 rounded-lg"
+                      <select
+                        name="quantity"
+                        className="p-2 bg-white border-2 rounded-lg"
                       >
-                        Send inquiry
-                      </button>
-                    </form>
-                  </div>
+                        <option>Select quantity</option>
+                        <option value={1}>1</option>
+                        <option value={1}>2</option>
+                        <option value={1}>3</option>
+                        <option value={1}>4</option>
+                        <option value={1}>5</option>
+                      </select>
+                    </div>
+                    <button
+                      type="submit"
+                      className="bg-blue-700 w-fit text-white px-3 py-2 rounded-lg"
+                    >
+                      Send inquiry
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -357,22 +456,13 @@ export default function Home() {
           <div className="my-5">
             <h1 className="text-2xl font-bold">Recommended items</h1>
           </div>
-          <div className="grid grid-flow-row grid-cols-5 gap-4 my-5 grid-rows-2">
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
-            <GridPicsDesign />
+          <div className="grid grid-flow-row bg-white rounded-md p-2 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 my-5 xl:grid-rows-2">
+            <GridPics />
           </div>
           <div className="my-5">
             <h1 className="text-2xl font-bold">Our extra services</h1>
           </div>
-          <div className="flex gap-4 my-5">
+          <div className="grid grid-flow-row xl:grid-cols-5 lg:grid-cols-4 bg-white rounded-md p-4 md:grid-cols-3 sm:grid-cols-2 gap-4 my-5">
             <ExtraServices />
             <ExtraServices />
             <ExtraServices />
@@ -383,8 +473,8 @@ export default function Home() {
             <h1 className="text-2xl font-bold">Suppliers by region</h1>
           </div>
           <div>
-            <div className="flex my-5">
-              <div className="grid grid-cols-5 gap-x-4">
+            <div className="flex my-5 justify-center">
+              <div className="grid grid-flow-row xl:grid-cols-5 md:grid-cols-4 bg-white rounded-md p-4 sm:grid-cols-3 grid-cols-2 gap-4 my-5 gap-x-4">
                 {countries.map((con) => (
                   <SupplierRegion con={con} />
                 ))}

@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Products() {
   const categories = [
     "Select Category",
+    "All Categories",
     "Mobile accessory",
     "Electronics",
-    "Smartphones",
-    "Modern tech",
+    "Fashion",
     "Tools and equipments",
     "Animal and pets",
     "Machinary tools",
@@ -54,6 +55,7 @@ export default function Products() {
   const [fetchedItems, setFetchedItems] = useState(0);
   const [fileFlow, setFileFlow] = useState(false);
 
+  const navigate = useNavigate();
   const min = 0;
   const handleSelectedCategories = (cat) => {
     setSelectedCategory(cat);
@@ -201,13 +203,20 @@ export default function Products() {
       </div>
     );
   };
-  const Products = ({ heading, description, price, image, rating }) => {
+  const Products = ({ product }) => {
     return (
-      <div>
+      <div
+        onClick={(e) => {
+          e.preventDefault();
+          navigate(`/products/${product._id}`, {
+            state: { product },
+          });
+        }}
+      >
         {/* Product card */}
         {fileFlow ? (
-          <div className="flex flex-col sm:flex-row border-2 relative rounded-md p-3 bg-white gap-5">
-            <div className="absolute right-5 top-5 w-10 h-10 border-2 rounded-md flex items-center justify-center bg-white shadow-sm">
+          <div className="flex flex-col sm:flex-row border-2 relative rounded-md p-3 bg-white gap-5 justify-center">
+            <div className="absolute right-5 top-5 h-10 border-2 rounded-md flex items-center justify-center bg-white shadow-sm">
               <img
                 src="/icon.png"
                 alt="product"
@@ -215,25 +224,25 @@ export default function Products() {
               />
             </div>
             <img
-              src={image}
+              src={product.imageUri}
               alt="product"
-              className="m-w-1/4 h-48 object-contain"
+              className="w-1/4 h-48 object-contain"
             />
             <div className="flex flex-col w-3/4 p-3">
-              <h4 className="text-lg font-medium">{heading}</h4>
+              <h4 className="text-lg font-medium">{product.title}</h4>
               <span className="text-black mt-3 text-2xl font-medium">
-                {price}
+                ${product.price}
               </span>
               <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-center">
                 <p>
-                  {"⭐".repeat(rating)} {"(5 reviews)"}
+                  {"⭐".repeat(product.rating || "5")} {"(5 reviews)"}
                 </p>
                 <li className="text-gray-600">154 orders</li>
                 <li className="text-green-300 text-lg">Free shipping</li>
               </div>
-              <p className="text-gray-600">{description}</p>
+              <p className="text-gray-600">{product.description}</p>
               <Link
-                to={"/product/1"}
+                to={`products/${product._id}`}
                 className="text-blue-600 mt-2 rounded-md hover:text-black"
               >
                 View Details
@@ -246,31 +255,33 @@ export default function Products() {
               <img
                 src="/icon.png"
                 alt="product"
-                className="cursor-pointer hover:bg-slate-100 w-6"
+                className="cursor-pointer hover:bg-slate-100 w-6 object-fill"
               />
             </div>
+            
             <img
-              src={image}
+              src = {product.imageUri}
               alt="product"
-              className="w-full h-48 object-contain rounded-md"
+              className="m-w-1/4 h-48 object-contain justify-self-center"
             />
-            <div className="flex flex-col w-full p-3">
-              <h4 className="text-lg font-medium">{heading}</h4>
-              <div className="flex flex-col gap-1">
-                <span className="text-black text-2xl font-medium">{price}</span>
-                <p className="text-gray-600">154 orders</p>
-              </div>
+            {console.log(product.imageUri)}
+            <div className="flex flex-col w-3/4 p-3">
+              <h4 className="text-lg font-medium">{product.title}</h4>
+              <span className="text-black mt-3 text-2xl font-medium">
+                ${product.price}
+              </span>
+              
               <div className="flex flex-col gap-1">
                 <p>
-                  {"⭐".repeat(rating)} {"(5 reviews)"}
+                  {"⭐".repeat(product.rating || "5")} {"(5 reviews)"}
                 </p>
                 <div className="flex flex-col gap-1 pl-4">
                   <li className="text-green-300 text-lg">Free shipping</li>
                 </div>
               </div>
-              <p className="text-gray-600">{description}</p>
+              <p className="text-gray-600">{product.description}</p>
               <Link
-                to={"/product/1"}
+                to={`products/${product._id}`}
                 className="text-blue-600 mt-2 rounded-md hover:text-black"
               >
                 View Details
@@ -281,6 +292,22 @@ export default function Products() {
       </div>
     );
   };
+  const URL = "http://localhost:5000";
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/products/getProducts`)
+      .then((response) => {
+        setProducts(response.data || []);
+        setFetchedItems((response.data || []).length);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      });
+  }, []);
+
   return (
     <div>
       <div className="flex justify-center bg-slate-50">
@@ -353,46 +380,59 @@ export default function Products() {
             </div>
           </div>
           <div className="w-full px-2 overflow-y-scroll h-screen">
-            <div className="flex rounded-md px-3 py-3 bg-white justify-between border-2">
-              <div className="flex justify-center gap-1 items-center">
+            <div className="flex rounded-md px-3 py-3  lg:justify-between md:justify-center bg-white justify-around border-2">
+              <div className="lg:flex hidden justify-center gap-1 items-center">
                 <p>{fetchedItems + " items in "}</p>
                 <span className="font-semibold text-lg">Mobiles accessory</span>
               </div>
-              <div className="flex items-center gap-3">
-                <input type="checkbox" checked className="p-1" />
-                <label className="text-lg">Verified only</label>
+              <div className="flex items-center lg:justify-start lg:w-auto w-full sm:justify-center justify-between gap-3">
+                <input
+                  type="checkbox"
+                  checked
+                  className="p-1 md:block hidden"
+                />
+                <label className="text-lg md:block hidden">Verified only</label>
+                <div className="lg:hidden flex flex-row gap-3 items-center border-2 sm:text-lg text-sm sm:py-2 py-1 sm:px-5 px-2  rounded">
+                  <img
+                    src="/icon.png"
+                    alt="icon"
+                    className="sm:w-4 w-2 sm:h-4 h-2"
+                  />
+                  <p className="">Filter</p>
+                </div>
                 <select
                   name="choice"
-                  className="py-3 pl-2 pr-8 bg-transparent rounded-md border-2"
+                  className="sm:py-3 py-1 pl-2 pr-6 bg-transparent rounded-md border-2 sm:text-lg text-sm"
                 >
                   <option value={"featured"}>Featured</option>
                   <option value={"local"}>Local</option>
                 </select>
+
                 <div className="rounded-md border-2">
                   <button
                     className="p-[9px] border-r-2 h-full active:bg-slate-100 "
                     onClick={(e) => {
                       e.preventDefault();
-                      setFileFlow(!fileFlow);
+                      setFileFlow(true);
                     }}
                   >
                     <img
-                      src="icon.png"
+                      src="/icon.png"
                       alt="icon"
-                      className="w-6 h-full object-cover"
+                      className="sm:w-6 w-4 h-full object-cover"
                     />
                   </button>
                   <button
                     className="p-[9px] active:bg-slate-100 h-full"
                     onClick={(e) => {
                       e.preventDefault();
-                      setFileFlow(!fileFlow);
+                      setFileFlow(false);
                     }}
                   >
                     <img
-                      src="icon.png"
+                      src="/icon.png"
                       alt="icon"
-                      className="w-6 h-full object-cover"
+                      className="sm:w-6 w-4 h-full object-cover"
                     />
                   </button>
                 </div>
@@ -401,33 +441,15 @@ export default function Products() {
             {/* Products grid */}
             <div>
               {fileFlow ? (
-                <div className="grid grid-cols-1 gap-4 mt-4">
-                  {[...Array(10)].map((_, idx) => (
-                    <Products
-                      key={idx}
-                      heading={"Check Shirt for men,cotton fabrics"}
-                      image={"/shirt.jpg"}
-                      description={
-                        "Check Shirt for men, cotton fabrics, available in various sizes and colors. Perfect for casual outings and formal events."
-                      }
-                      price={"$190.99"}
-                      rating={5}
-                    />
+                <div className="grid grid-cols-1 gap-4 mt-4 hover:cursor-pointer">
+                  {products.map((pro, idx) => (
+                    <Products key={idx} product={pro} />
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
-                  {[...Array(10)].map((_, idx) => (
-                    <Products
-                      key={idx}
-                      heading={"Check Shirt for men,cotton fabrics"}
-                      image={"/shirt.jpg"}
-                      description={
-                        "Check Shirt for men, cotton fabrics, available in various sizes and colors. Perfect for casual outings and formal events."
-                      }
-                      price={"$190.99"}
-                      rating={5}
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4 hover:cursor-pointer">
+                  {products.map((pro, idx) => (
+                    <Products key={idx} product={pro} />
                   ))}
                 </div>
               )}
