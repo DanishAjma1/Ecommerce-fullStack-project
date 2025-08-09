@@ -2,15 +2,16 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { addItemToLocalStorage } from "../componants/addToLocalStorage.js";
+import { toast } from "react-toastify";
+import { getItemsFromLocalStorage } from "../componants/getItemFromLocalStorage.js";
 
-export default function SelectedItem({querySearch}) {
+export default function SelectedItem({ querySearch }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { product } = location.state;
   const URL = "http://localhost:5000";
   const [products, setProducts] = useState([]);
-      const [allProducts, setAllProducts] = useState([]);
-  
+  const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
     axios
@@ -26,15 +27,15 @@ export default function SelectedItem({querySearch}) {
   }, []);
 
   useEffect(() => {
-     if (!querySearch || allProducts.length === 0) {
-      setProducts(allProducts)
+    if (!querySearch || allProducts.length === 0) {
+      setProducts(allProducts);
       return;
-     };
-      const filteredProducts = allProducts.filter((pro) =>
-        pro.title.toLowerCase().includes(querySearch.toLowerCase())
-      );
-      setProducts(filteredProducts);
-    }, [querySearch, allProducts]);
+    }
+    const filteredProducts = allProducts.filter((pro) =>
+      pro.title.toLowerCase().includes(querySearch.toLowerCase())
+    );
+    setProducts(filteredProducts);
+  }, [querySearch, allProducts]);
   const HandleResponsive = () => {
     return (
       <div className="flex flex-col w-full">
@@ -131,6 +132,21 @@ export default function SelectedItem({querySearch}) {
       </div>
     );
   };
+  const HandleProductButtons = (product) => {
+    const Items = getItemsFromLocalStorage();
+    let updatedCartItems = [...Items];
+    let existingItemIndex = updatedCartItems.findIndex((item) => {
+      return item._id === product._id;
+    });
+    if (existingItemIndex !== -1) {
+      updatedCartItems[existingItemIndex].quantity += 1;
+      localStorage.setItem("cartItems", JSON.stringify([...updatedCartItems]));
+      toast.info("Item quantity increased in cart");
+    } else {
+      addItemToLocalStorage(product);
+      toast.success("Item added to cart");
+    }
+  };
   return (
     <div>
       <div className="flex justify-center bg-slate-50">
@@ -209,7 +225,7 @@ export default function SelectedItem({querySearch}) {
                     className="bg-blue-500 md:w-40 flex justify-center text-white px-4 py-2 rounded-md my-5"
                     onClick={(e) => {
                       e.preventDefault();
-                      addItemToLocalStorage(product);
+                      HandleProductButtons(product);
                     }}
                   >
                     Add to Cart
@@ -219,7 +235,7 @@ export default function SelectedItem({querySearch}) {
                     className="bg-green-500 md:w-40 flex justify-center text-white px-4 py-2 rounded-md my-5"
                     onClick={(e) => {
                       e.preventDefault();
-                      addItemToLocalStorage(product);
+                      HandleProductButtons(product);
                       navigate("/cartitems");
                     }}
                   >
@@ -360,28 +376,30 @@ export default function SelectedItem({querySearch}) {
               Similar products
             </h4>
             <div className="flex flex-row gap-2 overflow-y-scroll h-auto">
-              {(querySearch === ""? allProducts: products).map((pro, index) => (
-                <div
-                  className="flex flex-col justify-center items-center hover:cursor-pointer gap-2 border-2 p-4 w-fit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(`/products/${pro._id}`, {
-                      state: { product: pro },
-                    });
-                  }}
-                  key={index}
-                >
-                  <img
-                    src={pro.imageUri}
-                    className="min-w-40 h-40 bg-slate-100 object-contain border-2 rounded-md"
-                    alt="You may like"
-                  />
-                  <div className="flex flex-col gap-1 flex-wrap text-wrap">
-                    <p>{pro.description}</p>
-                    <span className="text-gray-500"> ${pro.price}</span>
+              {(querySearch === "" ? allProducts : products).map(
+                (pro, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col justify-center items-center hover:cursor-pointer gap-2 border-2 p-4 w-fit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/products/${pro._id}`, {
+                        state: { product: pro },
+                      });
+                    }}
+                  >
+                    <img
+                      src={pro.imageUri}
+                      className="min-w-40 h-40 bg-slate-100 object-contain border-2 rounded-md"
+                      alt="You may like"
+                    />
+                    <div className="flex flex-col gap-1 flex-wrap text-wrap">
+                      <p>{pro.description}</p>
+                      <span className="text-gray-500"> ${pro.price}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
           {/* Discount section */}

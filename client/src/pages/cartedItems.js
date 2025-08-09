@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { addItemToLocalStorage } from "../componants/addToLocalStorage.js";
 import { removeItemFromLocalStorage } from "../componants/removeFromLocalStorage.js";
 import { getItemsFromLocalStorage } from "../componants/getItemFromLocalStorage.js";
+import { toast } from "react-toastify";
 
 export default function CartedItems() {
   const [cartedItems, setCartedItems] = useState([]);
@@ -21,7 +22,8 @@ export default function CartedItems() {
     setSubTotal(newSubTotal);
     const newDiscount = newSubTotal * 0.25;
     setDiscount(newDiscount);
-    setTotal(newSubTotal - newDiscount + tax);
+    if (subTotal !== 0) setTotal(newSubTotal - newDiscount + tax);
+    else setTotal(0);
   };
 
   useEffect(() => {
@@ -80,6 +82,7 @@ export default function CartedItems() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 removeItemFromLocalStorage(item);
+                                toast.info("Item removed from cart.");
                                 setCartedItems(
                                   cartedItems.filter((cartItem) => {
                                     return cartItem._id !== item._id;
@@ -89,10 +92,15 @@ export default function CartedItems() {
                             >
                               Remove
                             </button>
-                            <button className="text-blue-400 px-2 py-1 border-2 rounded-lg ml-2" onClick={(e)=>{
-                              e.preventDefault();
-                              alert("The item is already saved in carted items list,don't worry..")
-                            }}>
+                            <button
+                              className="text-blue-400 px-2 py-1 border-2 rounded-lg ml-2"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                alert(
+                                  "The item is already saved in carted items list,don't worry.."
+                                );
+                              }}
+                            >
                               Save for later
                             </button>
                           </div>
@@ -115,9 +123,20 @@ export default function CartedItems() {
                               className="border-2 border-gray-300 border-y-0 bg-transparent rounded-lg px-2 py-1 sm:mt-2"
                               onChange={(e) => {
                                 e.preventDefault();
-                                const updateQuantity = [...cartedItems];
-                                updateQuantity[index].quantity = e.target.value;
-                                setCartedItems(updateQuantity);
+                                const Items = getItemsFromLocalStorage();
+                                let updatedCartItems = [...Items];
+                                let existingItemIndex =
+                                  updatedCartItems.findIndex((it) => {
+                                    return it._id === item._id;
+                                  });
+                                updatedCartItems[existingItemIndex].quantity =
+                                  e.target.value;
+                                localStorage.setItem(
+                                  "cartItems",
+                                  JSON.stringify([...updatedCartItems])
+                                );
+                                toast.info("Item quantity changed in cart");
+                                setCartedItems(updatedCartItems);
                               }}
                             >
                               <option value="1">1</option>
@@ -198,7 +217,9 @@ export default function CartedItems() {
                     </div>
                     <div className="flex flex-row justify-between">
                       <p>Tax:</p>
-                      <p className="text-green-500">+${tax}</p>
+                      <p className="text-green-500">
+                        +${subTotal === 0 ? 0 : tax}
+                      </p>
                     </div>
                   </div>
                   <div className="flex flex-row justify-between mt-4">
@@ -249,14 +270,17 @@ export default function CartedItems() {
                       onClick={(e) => {
                         e.preventDefault();
                         const updatedCartItems = [...cartedItems];
-                        let existingItemIndex = cartedItems.findIndex((item) => {
-                          return item._id === pro._id;
-                        });
+                        let existingItemIndex = cartedItems.findIndex(
+                          (item) => {
+                            return item._id === pro._id;
+                          }
+                        );
                         if (existingItemIndex !== -1) {
                           updatedCartItems[existingItemIndex].quantity += 1;
                           setCartedItems(updatedCartItems);
                         } else {
                           addItemToLocalStorage(pro);
+                          toast.success("Item added to cart..");
                           updatedCartItems.push({ ...pro, quantity: 1 });
                           setCartedItems(updatedCartItems);
                         }
@@ -274,6 +298,7 @@ export default function CartedItems() {
                             return prod._id !== pro._id;
                           })
                         );
+                        toast.info("Item removed.");
                       }}
                     >
                       <img src="/icon.png" alt="icon" className="w-4 h-4" />

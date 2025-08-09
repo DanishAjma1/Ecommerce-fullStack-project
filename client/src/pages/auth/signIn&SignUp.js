@@ -1,19 +1,21 @@
 import { useState } from "react";
 import {
+  browserSessionPersistence,
   createUserWithEmailAndPassword,
-  getAuth,
+  setPersistence,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
 // import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { addDataToFireStore } from "../../componants/firebase/addDataToFireBase.js";
-
-export default function EmailToSignIn() {
+import { useAuth } from "../../contexts/authContext.js";
+import { auth } from "../../componants/firebase/firbaseConfig.js";
+export default function SignUpAndSignIn() {
   // const url = "http://localhost:5000";
   const navigate = useNavigate();
-  const auth = getAuth();
-  const [isSignInForm, setIsSignInForm] = useState(false);
+  const { user } = useAuth();
+  const [isSignInForm, setIsSignInForm] = useState(true);
 
   const [signInUser, setSignInUser] = useState({
     email: "",
@@ -36,15 +38,21 @@ export default function EmailToSignIn() {
 
   const handleSubmitSignIn = async (e) => {
     e.preventDefault();
-    console.log(signInUser);
-    await signInWithEmailAndPassword(
-      auth,
-      signInUser.email,
-      signInUser.password
-    )
+    await setPersistence(auth, browserSessionPersistence)
       .then(() => {
-        alert("Sign in successfully");
-        navigate("/");
+        return signInWithEmailAndPassword(
+          auth,
+          signInUser.email,
+          signInUser.password
+        )
+          .then(() => {
+            // alert("Sign in successfully");
+            setIsSignInForm(false);
+            navigate("/");
+          })
+          .catch((err) => {
+            console.log(err.message + " with error code of " + err.code);
+          });
       })
       .catch((err) => {
         console.log(err.message + " with error code of " + err.code);
@@ -53,26 +61,29 @@ export default function EmailToSignIn() {
 
   const handleSubmitSignUp = (e) => {
     e.preventDefault();
-    alert(auth.currentUser);
     if (signUpUser.password === signUpUser.confirmPassword) {
-      createUserWithEmailAndPassword(
+      return createUserWithEmailAndPassword(
         auth,
         signUpUser.email,
         signUpUser.password
-      ).then((userCredential) => {
-        const currentUser = userCredential.user;
-        console.log(currentUser);
-        addDataToFireStore({
-          uid: currentUser.uid,
-          email: currentUser.email,
-          role: "user",
+      )
+        .then((userCredential) => {
+          const currentUser = userCredential.user;
+          addDataToFireStore({
+            uid: currentUser.uid,
+            email: currentUser.email,
+            role: "user",
+          });
+          setIsSignInForm(true);
+        })
+        .catch((err) => {
+          console.log(err.message);
         });
-      });
     }
   };
   return (
     <div className="flex justify-center py-10">
-      {auth.currentUser  ? (
+      {user === null ? (
         isSignInForm ? (
           <form
             onSubmit={handleSubmitSignIn}
@@ -156,15 +167,18 @@ export default function EmailToSignIn() {
           </form>
         )
       ) : (
-        <div className="flex flex-col gap-4 justify-center">
-          <h1 className="text-2xl font-bold">Logout</h1>
+        <div className="flex flex-col gap-4 justify-center items-center">
+          <h1 className="text-xl font-bold">
+            Wanna Logout? just press the button politely..
+          </h1>
           <button
-            className="px-3 py-1 bg-red-500 text-white"
+            className="px-3 py-1 bg-red-500 text-white w-fit text-lg rounded-md shadow-md"
             onClick={(e) => {
               e.preventDefault();
               signOut(auth)
                 .then(() => {
                   console.log("logged out");
+                  setIsSignInForm(true);
                 })
                 .catch((err) => {
                   console.log(err);

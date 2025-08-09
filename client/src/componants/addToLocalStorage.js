@@ -3,6 +3,6 @@ export function addItemToLocalStorage(newItem){
       localStorage.setItem("cartItems", JSON.stringify([]));
     }
     const existingItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    existingItems.push(newItem);
+    existingItems.push({...newItem,quantity:1});
     localStorage.setItem("cartItems", JSON.stringify(existingItems));
   };

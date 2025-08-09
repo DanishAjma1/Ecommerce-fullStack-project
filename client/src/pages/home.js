@@ -49,7 +49,7 @@ const countries = [
   { name: "UAE", flag: "🇦🇪", desc: "Modern cities and desert luxury" },
 ];
 
-export default function Home({querySearch}) {
+export default function Home({ querySearch }) {
   const URL = "http://localhost:5000";
   const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
@@ -72,12 +72,14 @@ export default function Home({querySearch}) {
     if (!querySearch && allProducts.length !== 0) {
       setProducts(allProducts);
       return;
-    };
-    const filteredProducts = allProducts.filter((pro) =>
-      pro.title.toLowerCase().includes(querySearch.toLowerCase())
+    }
+    const filteredProducts = allProducts.filter(
+      (pro) =>
+        pro.title.toLowerCase().includes(querySearch.toLowerCase()) ||
+        pro.description.toLowerCase().includes(querySearch.toLowerCase())
     );
     setProducts(filteredProducts);
-  }, [querySearch, allProducts]);
+  }, [querySearch, products, allProducts]);
 
   const ExtraServices = () => {
     return (
@@ -116,8 +118,7 @@ export default function Home({querySearch}) {
   const GridPics = () => {
     return (
       <>
-        {(querySearch === ""? allProducts : products)
-        .map((pro, idx) => (
+        {(querySearch === "" ? allProducts : products).map((pro, idx) => (
           <div
             key={idx}
             className="flex flex-col text-black justify-center shadow-md items-center p-5 rounded-lg bg-white"
@@ -341,9 +342,9 @@ export default function Home({querySearch}) {
 
               {/* Grid of product images */}
               <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
-                {allProducts.slice(0, products.length - 1).map((pro, idx) => (
+                {products.slice(0, allProducts.length - 1).map((pro, idx) => (
                   <div
-                  key={idx}
+                    key={idx}
                     className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex"
                     onClick={(e) => {
                       e.preventDefault();
@@ -399,9 +400,9 @@ export default function Home({querySearch}) {
 
               {/* Grid of product images */}
               <div className="relative lg:col-span-5 lg:p-0 p-2 lg:gap-0 items-center overflow-y-scroll flex lg:grid lg:grid-cols-4">
-                {allProducts.slice(0, products.length - 1).map((pro, idx) => (
+                {products.slice(0, allProducts.length - 1).map((pro, idx) => (
                   <div
-                  key={idx}
+                    key={idx}
                     className="py-2 lg:p-0 relative lg:h-full border-2 lg:items-center flex"
                     onClick={(e) => {
                       e.preventDefault();
@@ -414,7 +415,7 @@ export default function Home({querySearch}) {
                       <div className="flex flex-col order-2 lg:order-none lg:w-1/2 justify-start px-1">
                         <h6 className="xl:text-md text-sm">{pro.title}</h6>
                         <p className="text-xs md:text-sm text-gray-600">
-                          From USD 19
+                          {pro.description}{" "}
                         </p>
                       </div>
                       <img
@@ -518,7 +519,7 @@ export default function Home({querySearch}) {
           <div>
             <div className="flex my-5 justify-center">
               <div className="grid grid-flow-row xl:grid-cols-5 md:grid-cols-4 bg-white rounded-md p-4 sm:grid-cols-3 grid-cols-2 gap-4 my-5 gap-x-4">
-                {countries.map((con,idx) => (
+                {countries.map((con, idx) => (
                   <SupplierRegion key={idx} con={con} />
                 ))}
               </div>

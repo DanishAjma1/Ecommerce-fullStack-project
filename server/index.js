@@ -8,16 +8,20 @@ app.use(express.json());
 
 // app.use(express.urlencoded({ extended: true }));
 const server = createServer(app);
-app.use(cors({
+app.use(
+  cors({
     origin: "http://localhost:3000",
-    credentials:true,
-}));
-app.use('/uploads', express.static('uploads'));
-app.use("/admin",adminProductRouter);
-app.use("/products",productRouter);
+    credentials: true,
+  })
+);
+app.use("/uploads", express.static("uploads"));
+app.use("/admin", adminProductRouter);
+app.use("/products", productRouter);
 
 app.use((err, req, res, next) => {
-    res.status(500).json({ message: "Internal Server Error" });
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
-server.listen(5000,()=> console.log("server is listening on port number 5000"));
+server.listen(5000, () => {
+  console.log("Server is running on port 5000");
+});
