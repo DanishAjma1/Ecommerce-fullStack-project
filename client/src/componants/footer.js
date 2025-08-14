@@ -263,8 +263,8 @@ const countries = [
               <p className="text-gray-500">@ 2025 Ecommerce</p>
               <div className="flex gap-3">
                 <select name="countries" className="py-3 bg-transparent text-lg">
-                  {countries.map((con) => (
-                    <option value={con.name}>
+                  {countries.map((con,idx) => (
+                    <option key={idx} value={con.name}>
                       {con.flag + " " + con.name}
                     </option>
                   ))}

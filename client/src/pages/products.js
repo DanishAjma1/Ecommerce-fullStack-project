@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Products({querySearch}) {
+export default function Products({ querySearch }) {
   const categories = [
     "Select Category",
     "All Categories",
@@ -258,9 +258,9 @@ export default function Products({querySearch}) {
                 className="cursor-pointer hover:bg-slate-100 w-6 object-contain"
               />
             </div>
-            
+
             <img
-              src = {product.imageUri}
+              src={product.imageUri}
               alt="product"
               className="min-w-1/4  flex-wrap sm:h-48 overflow-hidden object-contain justify-self-center"
             />
@@ -269,7 +269,7 @@ export default function Products({querySearch}) {
               <span className="text-black mt-3 text-2xl font-medium">
                 ${product.price}
               </span>
-              
+
               <div className="flex flex-col gap-1">
                 <p>
                   {"⭐".repeat(product.rating || "5")} {"(5 reviews)"}
@@ -293,7 +293,7 @@ export default function Products({querySearch}) {
   };
   const URL = "http://localhost:5000";
   const [products, setProducts] = useState([]);
-    const [allProducts, setAllProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
     axios
@@ -310,10 +310,10 @@ export default function Products({querySearch}) {
   }, []);
 
   useEffect(() => {
-   if (!querySearch || allProducts.length === 0) {
-    setProducts(allProducts)
-    return;
-   };
+    if (!querySearch || allProducts.length === 0) {
+      setProducts(allProducts);
+      return;
+    }
     const filteredProducts = allProducts.filter((pro) =>
       pro.title.toLowerCase().includes(querySearch.toLowerCase())
     );
@@ -399,6 +399,7 @@ export default function Products({querySearch}) {
               </div>
               <div className="flex items-center lg:justify-start lg:w-auto w-full sm:justify-center justify-between gap-3">
                 <input
+                  readOnly
                   type="checkbox"
                   checked
                   className="p-1 md:block hidden"
@@ -454,15 +455,19 @@ export default function Products({querySearch}) {
             <div>
               {fileFlow ? (
                 <div className="grid grid-cols-1 gap-4 mt-4 hover:cursor-pointer">
-                  {(querySearch === ""? allProducts: products).map((pro, idx) => (
-                    <Products key={idx} product={pro} />
-                  ))}
+                  {(querySearch === "" ? allProducts : products).map(
+                    (pro, idx) => (
+                      <Products key={idx} product={pro} />
+                    )
+                  )}
                 </div>
               ) : (
                 <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4 hover:cursor-pointer">
-                  {(querySearch === ""? allProducts: products).map((pro, idx) => (
-                    <Products key={idx} product={pro} />
-                  ))}
+                  {(querySearch === "" ? allProducts : products).map(
+                    (pro, idx) => (
+                      <Products key={idx} product={pro} />
+                    )
+                  )}
                 </div>
               )}
             </div>

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Router } from "express";
 import DBConnection from "../config/connectDB.js";
 import Product from "../models/product.js";
@@ -17,13 +18,9 @@ productRouter.get("/getProducts", async (req, res) => {
       .json({ message: "bad request while fetching the products" });
   }
 });
-
-import mongoose from "mongoose";
-
 productRouter.get("/get-products-with-id", async (req, res) => {
   try {
     const id = req.query.id;
-    console.log(id);
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid or missing product id" });
     }
