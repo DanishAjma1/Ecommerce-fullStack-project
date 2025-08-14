@@ -1,0 +1,10 @@
+    {
+      "rewrites": [
+        { "source": "/server/(.*)", "destination": "/server" }
+      ],
+      "functions": {
+        "server/index.js": {
+          "runtime": "nodejs18.x"
+        }
+      }
+    }
