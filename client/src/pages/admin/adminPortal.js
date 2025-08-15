@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-const URL = "http://localhost:5000";
+const URL = "https://ecommerce-backend-two-navy.vercel.app";
 export default function AdminPortal() {
   const handleSubmit = async (e) => {
     e.preventDefault();
