@@ -9,13 +9,15 @@ export default function SelectedItem({ querySearch }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { product } = location.state;
-  const URL = "http://localhost:5000";
+  const URL = "https://ecommerce-backend-two-navy.vercel.app";
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`${URL}/products/getProducts`)
+      .get(`${URL}/products/getProducts`,{
+        withCredentials:true
+      })
       .then((response) => {
         setProducts(response.data || []);
         setAllProducts(response.data || []);

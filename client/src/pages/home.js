@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const countries = [
@@ -50,14 +50,17 @@ const countries = [
 ];
 
 export default function Home({ querySearch }) {
-  const URL = "http://localhost:5000";
+  const URL = "https://ecommerce-backend-two-navy.vercel.app";
+  
   const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`${URL}/products/getProducts`)
+      .get(`${URL}/products/getProducts`,{
+        withCredentials:true
+      })
       .then((response) => {
         setProducts(response.data || []);
         setAllProducts(response.data || []);
