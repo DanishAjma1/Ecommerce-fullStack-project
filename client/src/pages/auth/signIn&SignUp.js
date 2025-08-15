@@ -6,13 +6,11 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-// import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { addDataToFireStore } from "../../componants/firebase/addDataToFireBase.js";
 import { useAuth } from "../../contexts/authContext.js";
 import { auth } from "../../componants/firebase/firbaseConfig.js";
 export default function SignUpAndSignIn() {
-  // const url = "http://localhost:5000";
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -46,7 +44,7 @@ export default function SignUpAndSignIn() {
           signInUser.password
         )
           .then(() => {
-            // alert("Sign in successfully");
+            alert("Sign in successfully");
             setIsSignInForm(false);
             navigate("/");
           })

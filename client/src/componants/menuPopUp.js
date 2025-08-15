@@ -34,13 +34,13 @@ export default function ShowmenuPopup() {
           <div className="flex flex-row items-center px-3">
             <img src="/icon.png" alt="icon" className="min-w-4 w-4" />
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-              My orders
+              <Link to="/cartitems" className="hover:text-gray-300">Cart items</Link>
             </li>
           </div>
           <div className="flex flex-row items-center px-3 border-t-2">
             <img src="/icon.png" alt="icon" className="min-w-4 w-4" />
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-              English | USD
+              <Link to="/admin/adminPortal" className="hover:text-gray-300">Admin Portal</Link>
             </li>
           </div>
           <div className="flex flex-row items-center px-3">
