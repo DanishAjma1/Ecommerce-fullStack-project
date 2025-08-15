@@ -11,7 +11,7 @@ export default function SelectedItem({ querySearch }) {
   const { product } = location.state;
   const URL = process.env.NODE_ENV === "production"
   ? process.env.BACKEND_VERCEL_URL
-  : "http://localhost:5000";
+  : "https://vercel.com/danish-ajmals-projects/ecommerce-backend";
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
 

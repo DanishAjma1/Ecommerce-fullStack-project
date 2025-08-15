@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const countries = [
@@ -50,10 +50,8 @@ const countries = [
 ];
 
 export default function Home({ querySearch }) {
-  const URL = process.env.NODE_ENV === "production"
-  ? process.env.BACKEND_VERCEL_URL
-  : "http://localhost:5000";
-
+  const URL = "https://vercel.com/danish-ajmals-projects/ecommerce-backend";
+  
   const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
