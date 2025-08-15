@@ -58,7 +58,7 @@ export default function Home({ querySearch }) {
 
   useEffect(() => {
     axios
-      .get(`${URL}/products/getProducts`,{
+      .get(`${URL}/api/products/getProducts`,{
         withCredentials:true
       })
       .then((response) => {

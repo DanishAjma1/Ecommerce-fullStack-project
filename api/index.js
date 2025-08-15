@@ -1,5 +1,5 @@
 import express from "express";
-import { createServer } from "http";
+// import { createServer } from "http";
 import cors from "cors";
 import productRouter from "./app/routes/productRoutes.js";
 import adminProductRouter from "./app/routes/adminAccessProducts.js";
@@ -29,7 +29,7 @@ app.use((err, req, res, next) => {
 app.get("/api/data", (req, res) => {
   res.json({ message: "Hello from backend!" });
 });
-
+console.log("backend is running");
 // server.listen(5000, () => {
 //   console.log("Server is running on port 5000");
 // });
