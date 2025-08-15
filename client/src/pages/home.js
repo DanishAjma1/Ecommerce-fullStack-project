@@ -50,7 +50,7 @@ const countries = [
 ];
 
 export default function Home({ querySearch }) {
-  const URL = "https://vercel.com/danish-ajmals-projects/ecommerce-backend";
+  const URL = "https://ecommerce-backend-two-navy.vercel.app";
   
   const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
@@ -58,7 +58,9 @@ export default function Home({ querySearch }) {
 
   useEffect(() => {
     axios
-      .get(`${URL}/products/getProducts`)
+      .get(`${URL}/products/getProducts`,{
+        withCredentials:true
+      })
       .then((response) => {
         setProducts(response.data || []);
         setAllProducts(response.data || []);
