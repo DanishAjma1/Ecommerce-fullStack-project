@@ -12,7 +12,7 @@ app.use(express.json());
 //   "http://localhost:3000",
 //   process.env.FRONTEND_VERCEL_URL
 // ];
-app.use(cors({ origin: '*', 
+app.use(cors({ origin: 'https://ecommerce-full-stack-project-alpha.vercel.app', 
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
