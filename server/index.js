@@ -8,9 +8,11 @@ app.use(express.json());
 
 // app.use(express.urlencoded({ extended: true }));
 const server = createServer(app);
-app.use(
-  cors({
-    origin: process.env.FRONTEND_VERCEL_URL,
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   process.env.FRONTEND_VERCEL_URL
+// ];
+app.use(cors({ origin: '*', 
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,

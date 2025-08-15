@@ -9,7 +9,9 @@ export default function SelectedItem({ querySearch }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { product } = location.state;
-  const URL = "http://localhost:5000";
+  const URL = process.env.NODE_ENV === "production"
+  ? process.env.BACKEND_VERCEL_URL
+  : "http://localhost:5000";
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
 

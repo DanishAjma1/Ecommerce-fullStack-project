@@ -50,7 +50,10 @@ const countries = [
 ];
 
 export default function Home({ querySearch }) {
-  const URL = "http://localhost:5000";
+  const URL = process.env.NODE_ENV === "production"
+  ? process.env.BACKEND_VERCEL_URL
+  : "http://localhost:5000";
+
   const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
