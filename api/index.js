@@ -33,4 +33,6 @@ console.log("backend is running");
 // server.listen(5000, () => {
 //   console.log("Server is running on port 5000");
 // });
-export default app;
+export default function handler(req, res) {
+  return app(req, res);
+}
