@@ -15,7 +15,7 @@ export default function SelectedItem({ querySearch }) {
 
   useEffect(() => {
     axios
-      .get(`${URL}/products/getProducts`,{
+      .get(`${URL}/api/products/getProducts`,{
         withCredentials:true
       })
       .then((response) => {
