@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Breadcrumbs from "./breadcrumbs.js";
 import CategoriesNav from "./categoriesNav.js";
 import BrandIdentification from "./brandIdentification.js";
@@ -54,21 +54,38 @@ export default function Header({ querySearch, setQuerySearch }) {
   ];
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div>
       <div className="flex md:flex-row flex-col items-center border border-b-2">
         <div className="lg:w-1/4 md:w-2/5 w-full p-5 flex flex-row items-center md:justify-center">
           <div
-            className="bg-white py-3 px-2 rounded-lg shadow-lg mr-4"
+            className="bg-white py-3 px-2 rounded-lg shadow-lg mr-4 lg:hidden block"
             onClick={(e) => {
               e.preventDefault();
               setIsOpen(!isOpen);
             }}
           >
-            <img src="/menuIcon.png" alt="icon" className="min-w-6 w-6 lg:hidden block" />
-            {isOpen && <ShowmenuPopup />}
+            <img src="/menuIcon.png" alt="icon" className="min-w-6 w-6" />
           </div>
+          {isOpen && <div ref={menuRef}>
+          <ShowmenuPopup />
+        </div>}
           <BrandIdentification />
         </div>
         <div className="flex lg:w-2/4 md:w-3/5 w-5/6  md:p-0 py-3 justify-center items-center">
@@ -106,7 +123,13 @@ export default function Header({ querySearch, setQuerySearch }) {
         </div>
         <div className="w-1/4 lg:flex hidden justify-center items-center">
           <div className="w-2/3 p-3 rounded-lg flex flex-row justify-evenly">
-            <div className="flex flex-col justify-center items-center hover:cursor-pointer hover:text-blue-600 hover:scale-110 transition">
+            <div
+              className="flex flex-col justify-center items-center hover:cursor-pointer hover:text-blue-600 hover:scale-110 transition"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/signupandsignin");
+              }}
+            >
               <img src="/profile.png" alt="icon" className="w-6" />
               <p className="text-xs">profile</p>
             </div>
@@ -130,17 +153,16 @@ export default function Header({ querySearch, setQuerySearch }) {
       <div className="p-5 border flex justify-center border-b-2">
         <div className="flex w-10/12">
           <div className="lg:w-4/6 w-2/6 justify-start md:flex hidden flex-row">
-            <span
-              className="flex lg:w-3/12 flex-row w-full items-center mr-5">
+            <span className="lg:flex hidden lg:w-3/12 flex-row w-full items-center mr-5">
               <img
                 src="/menuIcon.png"
                 alt="icon"
-                className="min-w-8 w-8 mr-2 shadow-md p-1 rounded-sm"
+                className="min-w-8 w-10 h-10 mr-2 shadow-md p-2 rounded-lg"
                 onClick={(e) => {
-                e.preventDefault();
-                setIsOpen(!isOpen);
-              }}
-            />
+                  e.preventDefault();
+                  setIsOpen(!isOpen);
+                }}
+              />
               <NavItems value={"All Cetagory"} />
             </span>
             <div className="lg:w-5/6 lg:flex hidden gap-2 flex-row xl:justify-around justify-between items-center ">
@@ -162,9 +184,9 @@ export default function Header({ querySearch, setQuerySearch }) {
                   <option hidden value={"#"}>
                     Ship-to
                   </option>
-                  {countries.map((con,idx) => (
+                  {countries.map((con, idx) => (
                     <option
-                    key={idx}
+                      key={idx}
                       value={con.value}
                     >{`${con.name} ${con.flag}`}</option>
                   ))}
@@ -178,7 +200,7 @@ export default function Header({ querySearch, setQuerySearch }) {
                   <option hidden value={"#"}>
                     Currency
                   </option>
-                  {currencies.map((cur,idx) => (
+                  {currencies.map((cur, idx) => (
                     <option key={idx} value={cur.name}>
                       {cur.code + " - " + cur.symbol}
                     </option>
